@@ -7,10 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const formElem = document.querySelector('.form');
   const galleryEl = document.querySelector('.gallery-el');
   const loaderElem = document.querySelector('.loader');
-  const loadMoreBtn = document.querySelector('.load-more-btn');
-
-  let currentPage = 1;
-  let maxPages = null;
 
   hideLoader();
 
