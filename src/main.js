@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const galleryEl = document.querySelector('.gallery-el');
   const loaderElem = document.querySelector('.loader');
   const loadMoreBtn = document.querySelector('.load-more-btn');
+  let page = 1;
+  let query = '';
 
   hideLoader();
   loadMoreBtn.style.display = 'none';
@@ -18,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   formElem.addEventListener('submit', onSubmit);
+  loadMoreBtn.addEventListener('click', loadMoreImages);
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -29,6 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (data.hits.length === 0) {
         throw new Error('No images found');
       }
+      query = value;
+      page = 1;
       renderImages(data.hits);
       loadMoreBtn.style.display = 'block';
     } catch (error) {
@@ -103,33 +108,4 @@ document.addEventListener('DOMContentLoaded', () => {
   function hideLoader() {
     loaderElem.style.display = 'none';
   }
-
-  let page = 1;
-  let query = '';
-
-  async function loadMoreImages() {
-    showLoader();
-    try {
-      const data = await getPhotoBySearch(query);
-      if (data.hits.length === 0) {
-        throw new Error('No more images found');
-      }
-      renderImages(data.hits);
-      page++;
-    } catch (error) {
-      renderError(error);
-    } finally {
-      hideLoader();
-    }
-  }
-
-  loadMoreBtn.addEventListener('click', loadMoreImages);
-
-  formElem.addEventListener('value', submitForm);
-
-  function loadMoreImages() {
-  }
-
-  function submitForm(event) {
-    event.preventDefault();
-  }
+});
