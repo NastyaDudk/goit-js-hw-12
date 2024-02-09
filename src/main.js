@@ -9,7 +9,7 @@ const refs = {
   formElem: document.querySelector('.form'),
   galleryEl: document.querySelector('.gallery-el'),
   loaderElem: document.querySelector('.loader'),
-  btnLoad: document.querySelector('.load - more - btn'),
+  btnLoad: document.querySelector('.load-more-btn'),
 };
 
 let _page = 1;
@@ -18,8 +18,8 @@ const totalPages = Math.ceil(500 / limit);
 let value = '';
 console.log(value);
 
-refs.formEl.addEventListener('submit', onFormSubmit);
-refs.loader.style.visibility = 'hidden';
+refs.formElem.addEventListener('submit', onFormSubmit);
+refs.loaderElem.style.visibility = 'hidden';
 
 async function onFormSubmit(e) {
   e.preventDefault();
