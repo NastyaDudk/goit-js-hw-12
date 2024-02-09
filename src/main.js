@@ -5,7 +5,7 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 import Axios from 'axios';
 
 const refs = {
-  input: document.querySelector('.searchQuery'),
+  searchQuery: document.querySelector('.searchQuery'),
   formElem: document.querySelector('.form'),
   galleryEl: document.querySelector('.gallery-el'),
   loaderElem: document.querySelector('.loader'),
@@ -19,7 +19,7 @@ let value = '';
 console.log(value);
 
 refs.formElem.addEventListener('submit', onFormSubmit);
-refs.loaderElem.style.visibility = 'hidden';
+refs.loader.style.visibility = 'hidden';
 
 async function onFormSubmit(e) {
   e.preventDefault();
