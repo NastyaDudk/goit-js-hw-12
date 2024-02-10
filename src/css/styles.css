@@ -91,7 +91,6 @@ li {
   color: #fff;
   cursor: pointer;
   margin: 8px;
-  display: none;
   position: fixed;
   left: 50%;
   transform: translateX(-50%);

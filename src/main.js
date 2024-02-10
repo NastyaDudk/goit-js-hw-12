@@ -92,7 +92,7 @@ function imageTemplate(images) {
       <a class="photo-card-link" href="${largeImageURL}">
         <img class="photo-card__img" src="${webformatURL}" alt="${tags}" />
       </a>
-      <div class="info" style="display: flex; gap: 20px; margin-left: 10px;">
+      <div class="info" style ="display:flex; gap:20px;">
         <p class="info-item">
           <b class="info-item-title">Likes:</b>
           <span class="info-item-value">${likes}</span>
