@@ -4,97 +4,201 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import Axios from 'axios';
 
-document.addEventListener('DOMContentLoaded', async () => {
-  const galleryEl = document.getElementById('gallery');
-  const loadMoreBtn = document.getElementById('load-more');
-  const loaderEl = document.querySelector('.loader');
-  const perPage = 15;
-  let page = 1;
-  let currentQuery = '';
+const galleryEl = document.getElementById('.gallery-el');
+const loadMoreBtn = document.getElementById('.load-more');
+const loaderEl = document.querySelector('.loader');
 
-  const apiUrl = 'https://pixabay.com/api/';
-  const apiKey = '42153847-0f7baac2d7b2e92d7ce6bbe8e';
+const PIXABAY_URL = 'https://pixabay.com/api/';
+const PIXABAY_API_KEY = '2208122-c38407f0c226da94dd817bfa0';
+const DEBOUNCE_DELAY = 100;
+const POST_PER_PAGE = 15;
+let currentPage = 1;
 
-  const lightbox = new SimpleLightbox('.gallery a');
+searchForm.addEventListener(
+  'input',
+  debounce(event => {
+    const searchValue = event.target.value;
+    localStorage.setItem('search-term', searchValue.trim());
+  }, DEBOUNCE_DELAY)
+);
 
-  loadMoreBtn.addEventListener('click', searchImages);
-
-  async function searchImages() {
-    try {
-      const query = '';
-      const response = await Axios.get(apiUrl, {
-        params: {
-          key: apiKey,
-          q: query,
-          per_page: perPage,
-          page: page,
-        },
-      });
-
-      const data = response.data;
-
-      if (data.hits.length > 0) {
-        const images = data.hits;
-        const append = page > 1;
-
-        renderImages(images, append);
-        page++;
-      } else {
-        throw new Error('No images found');
-      }
-    } catch (error) {
-      console.log(error);
-      renderError('Error: Failed to fetch images');
-    }
+submitBtn.addEventListener('click', event => {
+  event.preventDefault();
+  const savedSearch = localStorage.getItem('search-term');
+  if (savedSearch === null || savedSearch === '') {
+    Notiflix.Notify.info('Please type something in the search input.');
+    return;
   }
+  currentPage = 1;
+  fetchImages(savedSearch, currentPage);
+});
 
-  function renderImages(array, append = false) {
-    const markup = array
-      .map(
-        ({
-          largeImageURL,
-          webformatURL,
-          tags,
-          likes,
-          views,
-          comments,
-          downloads,
-        }) => {
-          return `
-          <div class="gallery">
-            <a href="${largeImageURL}">
-              <img src="${webformatURL}" alt="${tags}" title="${tags}" width="360" height="300" />
-              <ul class="info-cards-container">
-                <li class="info-cards-elements">likes<span>${likes}</span></li>
-                <li class="info-cards-elements">views<span>${views}</span></li>
-                <li class="info-cards-elements">comments<span>${comments}</span></li>
-                <li class="info-cards-elements">downloads<span>${downloads}</span></li>
-              </ul>
-            </a>
+const fetchImages = async (searchValue, currentPage) => {
+  let galleryMarkup = '';
+  let params = new URLSearchParams({
+    key: PIXABAY_API_KEY,
+    q: searchValue,
+    image_type: 'photo',
+    orientation: 'horizontal',
+    safesearch: true,
+    per_page: POST_PER_PAGE,
+  });
+
+  try {
+    const response = await axios.get(
+      `${PIXABAY_URL}?${params}&page=${currentPage}`
+    );
+    // console.log('response: ', response);
+    const imagesArray = response.data.hits;
+    // console.log('imagesArray: ', imagesArray);
+    if (searchValue === '') {
+    }
+    if (imagesArray.length === 0) {
+      Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+
+      return;
+    }
+
+    loadMoreBtn.style.display = 'block';
+    footer.style.display = 'flex';
+
+    galleryMarkup = imagesArray
+      .map(image => {
+        return `
+        <div class="photo-card">
+          <div class ="thumb">
+            <img class="img" src="${image.webformatURL}" alt="${image.tags}" loading="lazy" />
           </div>
-        `;
-        }
-      )
+          <div class="info">
+            <p class="info-item">
+              <b>Likes</b>
+              ${image.likes}
+            </p>
+            <p class="info-item">
+              <b>Views</b>
+              ${image.views}
+            </p>
+            <p class="info-item">
+              <b>Comments</b>
+              ${image.comments}
+            </p>
+            <p class="info-item">
+              <b>Downloads</b>
+              ${image.downloads}
+            </p>
+          </div>
+        </div>
+      `;
+      })
       .join('');
 
-    if (append) {
-      galleryEl.insertAdjacentHTML('beforeend', markup);
-    } else {
-      galleryEl.innerHTML = markup;
+    gallery.innerHTML = galleryMarkup;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const fetchNewImages = async (searchValue, currentPage) => {
+  let galleryMarkup = '';
+  let params = new URLSearchParams({
+    key: PIXABAY_API_KEY,
+    q: searchValue,
+    image_type: 'photo',
+    orientation: 'horizontal',
+    safesearch: true,
+    per_page: POST_PER_PAGE,
+  });
+
+  try {
+    const response = await axios.get(
+      `${PIXABAY_URL}?${params}&page=${currentPage}`
+    );
+    // console.log('response: ', response);
+    const imagesArray = response.data.hits;
+    // console.log('imagesArray: ', imagesArray);
+    if (imagesArray.length === 0) {
+      Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+      return;
     }
 
-    lightbox.refresh();
-  }
+    galleryMarkup = imagesArray
+      .map(image => {
+        return `
+        <div class="photo-card">
+          <div class ="thumb">
+            <img class="img" src="${image.webformatURL}" alt="${image.tags}" loading="lazy" />
+          </div>
+          <div class="info">
+            <p class="info-item">
+              <b>Likes</b>
+              ${image.likes}
+            </p>
+            <p class="info-item">
+              <b>Views</b>
+              ${image.views}
+            </p>
+            <p class="info-item">
+              <b>Comments</b>
+              ${image.comments}
+            </p>
+            <p class="info-item">
+              <b>Downloads</b>
+              ${image.downloads}
+            </p>
+          </div>
+        </div>
+      `;
+      })
+      .join('');
 
-  function renderError(error) {
-    const errorContainer = document.getElementById('error-container');
-    const errorElement = document.createElement('p');
-    errorElement.classList.add('error-message');
-    errorElement.textContent = error;
-    errorContainer.innerHTML = '';
-    errorContainer.appendChild(errorElement);
-    errorContainer.style.display = 'block';
+    gallery.insertAdjacentHTML('beforeend', galleryMarkup);
+  } catch (error) {
+    console.error(error);
   }
+};
 
-  searchImages();
+loadMoreBtn.addEventListener('click', async () => {
+  const searchValue = localStorage.getItem('search-term');
+  currentPage++;
+  let params = new URLSearchParams({
+    key: PIXABAY_API_KEY,
+    q: searchValue,
+    image_type: 'photo',
+    orientation: 'horizontal',
+    safesearch: true,
+    per_page: POST_PER_PAGE,
+  });
+  try {
+    const response = await axios.get(
+      `${PIXABAY_URL}?${params}&page=${currentPage}`
+    );
+
+    const imagesArray = response.data.hits;
+    const imagesPerPage = POST_PER_PAGE;
+
+    const totalImages = response.data.totalHits;
+    const maxPageNumber = totalImages / imagesPerPage;
+    const maxPageNumberRoundUp = Math.ceil(maxPageNumber);
+    console.log('currentPage: ', currentPage);
+    console.log('maxPageNumber: ', maxPageNumber);
+    console.log('maxPageNumberRoundUp: ', maxPageNumberRoundUp);
+
+    if (currentPage === maxPageNumberRoundUp) {
+      footer.style.display = 'none';
+      loadMoreBtn.style.display = 'none';
+      Notiflix.Notify.info(
+        "We're sorry, but you've reached the end of search results."
+      );
+    }
+
+    fetchNewImages(searchValue, currentPage);
+  } catch (error) {
+    console.error(error);
+  }
 });
+morebut.style.display = 'none';
+loadMoreBtn.style.display = 'none';
