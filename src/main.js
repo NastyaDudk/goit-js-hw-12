@@ -5,9 +5,10 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 import Axios from 'axios';
 
 const galleryEl = document.getElementById('.gallery-el');
-const loadMoreBtn = document.getElementById('.load-more');
+const submitBtn = document.querySelector("[type='submit']");
+const loadMoreBtn = document.getElementById('.load-more-btn');
 const loaderEl = document.querySelector('.loader');
-const searchForm = document.querySelector('#search-form');
+const searchForm = document.querySelector('.form');
 
 const PIXABAY_URL = 'https://pixabay.com/api/';
 const PIXABAY_API_KEY = '2208122-c38407f0c226da94dd817bfa0';
