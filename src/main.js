@@ -4,6 +4,7 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import axios from 'axios';
 
+const input = document.querySelector('.searchQuery');
 const form = document.querySelector('.form');
 const container = document.querySelector('.gallery-el');
 const loaderContainer = document.querySelector('.loader');
