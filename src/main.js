@@ -19,7 +19,7 @@ let value = '';
 console.log(value);
 
 refs.formElem.addEventListener('submit', onFormSubmit);
-refs.loader.style.visibility = 'hidden';
+refs.loaderElem.style.visibility = 'hidden';
 
 async function onFormSubmit(e) {
   e.preventDefault();

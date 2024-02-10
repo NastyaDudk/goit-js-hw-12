@@ -90,3 +90,7 @@ li {
   cursor: pointer;
   margin: 8px;
 }
+
+.morebut {
+  text-align: center;
+}
