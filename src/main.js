@@ -50,7 +50,7 @@ function onFormSubmit(e) {
 }
 
 async function onLoadMore() {
-  loaderContainer.style.display = 'block';
+  loaderContainer.style.visibility = 'visible';
   const data = await searchImages(query);
   renderImages(data);
   loaderContainer.style.display = 'none';
@@ -92,7 +92,7 @@ function imageTemplate(images) {
       <a class="photo-card-link" href="${largeImageURL}">
         <img class="photo-card__img" src="${webformatURL}" alt="${tags}" />
       </a>
-      <div class="info" style ="display:flex; gap:20px;">
+      <div class="info" style ="display:flex; gap:10px; margin-left:20px;">
         <p class="info-item">
           <b class="info-item-title">Likes:</b>
           <span class="info-item-value">${likes}</span>
@@ -143,27 +143,10 @@ function hideButton() {
   }
 }
 
-function fetchImages(searchQuery, page) {
-  const apiKey = 'your_api_key';
-  const perPage = 12;
-  const url = `https://pixabay.com/api/?key=${apiKey}&q=${searchQuery}&page=${page}&per_page=${perPage}`;
-
-  axios
-    .get(url)
-    .then(res => {
-      const images = res.data.hits;
-      displayImages(images);
-      showButton();
-    })
-    .catch(err => console.error(err));
-}
-
-loadMoreButton.addEventListener('click', () => {
-  page += 1;
-  fetchImages(searchQuery, page);
-});
-
 function showButton() {
   loadMoreButton.style.display = 'block';
   loadMoreButton.style.textAlign = 'center';
+  if (page > totalPages) {
+    return;
+  }
 }
