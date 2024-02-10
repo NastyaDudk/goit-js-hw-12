@@ -5,7 +5,7 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 import Axios from 'axios';
 
 const refs = {
-  searchQuery: document.querySelector('.searchQuery'),
+  searchQuery: document.querySelector('#searchQuery'),
   formElem: document.querySelector('.form'),
   galleryEl: document.querySelector('.gallery-el'),
   loaderElem: document.querySelector('.loader'),
