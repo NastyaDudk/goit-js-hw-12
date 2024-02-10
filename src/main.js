@@ -14,6 +14,9 @@ const DEBOUNCE_DELAY = 100;
 const POST_PER_PAGE = 15;
 let currentPage = 1;
 
+function hideLoader() {
+  loaderEl.style.display = 'none';
+}
 searchForm.addEventListener(
   'input',
   debounce(event => {
@@ -190,7 +193,7 @@ loadMoreBtn.addEventListener('click', async () => {
     if (currentPage === maxPageNumberRoundUp) {
       footer.style.display = 'none';
       loadMoreBtn.style.display = 'none';
-      Notiflix.Notify.info(
+      iziToast.iziToast.info(
         "We're sorry, but you've reached the end of search results."
       );
     }
