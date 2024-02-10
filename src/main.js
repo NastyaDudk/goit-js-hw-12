@@ -20,13 +20,14 @@ console.log(value);
 
 refs.formElem.addEventListener('submit', onFormSubmit);
 refs.loaderElem.style.visibility = 'hidden';
+refs.btnLoad.style.visibility = 'hidden';
 
 async function onFormSubmit(e) {
   e.preventDefault();
   value = refs.searchQuery.value.trim();
   if (value !== '') {
     refs.loaderElem.style.visibility = 'visible';
-    refs.galleryEI.innerHTML = '';
+    refs.galleryEl.innerHTML = '';
     getPageData();
   }
   _page = 1;
@@ -116,30 +117,7 @@ async function getPageData() {
     }
   } else {
     iziToast.error({
-      message:
-        'Sorry, there are no images matching your search query. Please try again!',
-      position: 'topRight',
-    });
-  }
-  refs.loaderElem.style.visibility = 'hidden';
-}
-
-refs.btnLoad.addEventListener('click', onBtnLoadClick);
-
-async function onBtnLoadClick() {
-  _page += 1;
-
-  const data = await getUrl();
-  renderImages(data.hits);
-  checkTotalHits(data.totalHits);
-}
-
-function checkTotalHits(totalPages) {
-  if (_page >= totalPages) {
-    return iziToast.error({
-      position: 'bottomRight',
-      color: 'blue',
-      message: "We're sorry, there are no more posts to load",
+      message: 'Sorry, there are no images matching your search query',
     });
   }
 }
