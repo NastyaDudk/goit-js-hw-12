@@ -12,7 +12,7 @@ ul {
   color: #2e2f42;
 }
 
-.info {
+div {
   display: flex;
   gap: 20px;
   margin-left: 10px;
