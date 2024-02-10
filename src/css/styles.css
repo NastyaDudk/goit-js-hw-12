@@ -12,12 +12,6 @@ ul {
   color: #2e2f42;
 }
 
-div {
-  display: flex;
-  gap: 20px;
-  margin-left: 10px;
-}
-
 a {
   text-decoration: none;
 }
@@ -97,4 +91,8 @@ li {
   color: #fff;
   cursor: pointer;
   margin: 8px;
+  display: none;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
 }

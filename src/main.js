@@ -96,21 +96,23 @@ function imageTemplate(images) {
           alt="${tags}" 
         />
       </a>
-      <div class="info">
+      <div class="info" <style = display: flex;
+  gap: 20px;
+  margin-left: 10px;>
         <p class="info-item">
-          <b class="info-item-title">Likes</b>
+          <b class="info-item-title">Likes:</b>
           <span class="info-item-value">${likes}</span>
         </p>
         <p class="info-item">
-          <b class="info-item-title">Views</b>
+          <b class="info-item-title">Views:</b>
           <span class="info-item-value">${views}</span>
         </p>
         <p class="info-item">
-          <b class="info-item-title">Comments</b>
+          <b class="info-item-title">Comments:</b>
           <span class="info-item-value">${comments}</span>
         </p>
         <p class="info-item">
-          <b class="info-item-title">Downloads</b>
+          <b class="info-item-title">Downloads:</b>
           <span class="info-item-value">${downloads}</span>
         </p>
       </div>
@@ -142,11 +144,12 @@ function renderImages({ hits, totalHits }) {
 }
 
 function hideButton() {
-  if (page > totalPages) {
+  if (page >= totalPages) {
     loadMoreButton.style.display = 'none';
   }
 }
 
 function showButton() {
   loadMoreButton.style.display = 'block';
+  loadMoreButton.style.textalign = 'center';
 }
