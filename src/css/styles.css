@@ -24,6 +24,7 @@ a {
 
 img {
   width: 450px;
+  height: 300px;
 }
 
 li {
@@ -75,6 +76,7 @@ li {
 }
 
 .gallery-el {
+  gap: 30px;
   display: flex;
   flex-wrap: wrap;
   margin-top: 40px;
