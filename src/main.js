@@ -4,6 +4,10 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import Axios from 'axios';
 
+const loaderEl = document.querySelector('.loader');
+const btnLoad = document.querySelector('.load-more-btn');
+const formEl = document.getElementById('search-form');
+
 export const refs = {
   galleryEl: document.getElementById('.gallery-el'),
   submitBtn: document.querySelector("[type='submit']"),
@@ -21,7 +25,7 @@ const simpleLightBox = new SimpleLightbox('.gallery a', {
   captionDelay: 250,
 });
 
-refs.formEl.addEventListener('submit', onFormSubmit);
+refs.formEl.addEventListener('search-form', onFormSubmit);
 loaderHide();
 
 async function onFormSubmit(e) {
