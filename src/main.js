@@ -4,120 +4,125 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import Axios from 'axios';
 
-const refs = {
-  searchQuery: document.querySelector('#searchQuery'),
-  formElem: document.querySelector('.form'),
-  galleryEl: document.querySelector('.gallery-el'),
-  loaderElem: document.querySelector('.loader'),
-  btnLoad: document.querySelector('.load-more-btn'),
-};
+document.addEventListener('DOMContentLoaded', () => {
+  const formElem = document.querySelector('.form');
+  const galleryEl = document.querySelector('.gallery-el');
+  const loaderElem = document.querySelector('.loader');
+  const loadMoreBtn = document.querySelector('.load-more-btn');
+  let page = 1;
+  let searchQuery = '';
 
-let _page = 1;
-const limit = 15;
-const totalPages = Math.ceil(500 / limit);
-let value = '';
-console.log(value);
+  hideLoader();
 
-refs.formElem.addEventListener('submit', onFormSubmit);
-refs.loaderElem.style.visibility = 'hidden';
-refs.btnLoad.style.visibility = 'hidden';
-
-async function onFormSubmit(e) {
-  e.preventDefault();
-  value = refs.searchQuery.value.trim();
-  if (value !== '') {
-    refs.loaderElem.style.visibility = 'visible';
-    refs.galleryEl.innerHTML = '';
-    getPageData();
-  }
-  _page = 1;
-  const data = await getUrl();
-  if (data.hits.length > 0 && value !== '') {
-    refs.loaderElem.style.visibility = 'hidden';
-    renderImages(data.hits);
-    refs.btnLoad.style.visibility = 'visible';
-  } else {
-    refs.loaderElem.style.visibility = 'hidden';
-    iziToast.error({
-      message:
-        'Sorry, there are no images matching your search query. Please try again!',
-      position: 'topRight',
-    });
-  }
-
-  e.target.reset();
-}
-
-const axios = Axios.create({
-  baseURL: 'https://pixabay.com/api/',
-});
-async function getUrl() {
-  const response = await axios.get('', {
-    params: {
-      key: '42132466-2eec74b8e2a534f613ea758a4',
-      q: value,
-      image_type: 'photo',
-      orientation: 'horizontal',
-      safesearch: true,
-      per_page: limit,
-      page: _page,
-    },
+  const lightbox = new SimpleLightbox('.gallery a', {
+    captionDelay: 250,
   });
 
-  return response.data;
-}
-function imageTemplate(img) {
-  const {
-    webformatURL,
-    largeImageURL,
-    tags,
-    likes,
-    views,
-    comments,
-    downloads,
-  } = img;
+  formElem.addEventListener('submit', onSubmit);
+  loadMoreBtn.addEventListener('click', onLoadMore);
 
-  return `<li>
-    <div class="card">
-    <div class="img-container">
-    <a href="${largeImageURL}">
-    <img src="${webformatURL}" alt="${tags}" />
-    </a>
-    </div>
-    <div class="img-comments">
-    <p class="describe">Likes ${likes}</p>
-    <p class="describe">Views ${views}</p>
-    <p class="describe">Comments ${comments}</p>
-    <p class="describe">Downloads ${downloads}</p>
-    </div>
-    </div>
-    </li>
-    `;
-}
-function imagesTemplate(images) {
-  return images.map(imageTemplate).join('');
-}
-function renderImages(images) {
-  const markup = imagesTemplate(images);
-  refs.galleryEl.insertAdjacentHTML('beforeend', markup);
-  let simpleLightBox = new SimpleLightbox('.gallery a', {
-    captionsData: 'alt',
-    captionDelay: 250,
-  }).refresh();
-}
+  function onSubmit(e) {
+    e.preventDefault();
+    showLoader();
 
-async function getPageData() {
-  const data = await getUrl();
-  if (data.hits.length > 0) {
-    renderImages(data.hits);
-    if (_page < totalPages) {
-      refs.btnLoad.style.visibility = 'visible';
-    } else {
-      refs.btnLoad.style.visibility = 'hidden';
-    }
-  } else {
-    iziToast.error({
-      message: 'Sorry, there are no images matching your search query',
-    });
+    searchQuery = formElem.querySelector('.input').value;
+    page = 1;
+    getPhotos()
+      .then(data => {
+        renderImages(data.hits);
+        toggleLoadMoreBtn(data.totalHits);
+      })
+      .catch(error => {
+        renderError(error);
+      })
+      .finally(() => {
+        hideLoader();
+      });
   }
-}
+
+  async function onLoadMore() {
+    showLoader();
+
+    page++;
+    getPhotos()
+      .then(data => {
+        const newImages = data.hits;
+        renderImages(newImages, true);
+        toggleLoadMoreBtn(data.totalHits);
+      })
+      .catch(error => {
+        renderError(error);
+      })
+      .finally(() => {
+        hideLoader();
+      });
+  }
+
+  async function getPhotos() {
+    const BASE_URL = 'https://pixabay.com/api/';
+    const KEY = '42153847-0f7baac2d7b2e92d7ce6bbe8e';
+    const params = `?key=${KEY}&q=${searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=15&page=${page}`;
+    const url = BASE_URL + params;
+
+    try {
+      const response = await Axios.get(url);
+      const data = response.data;
+
+      if (data.total === 0) {
+        throw new Error('No images found');
+      }
+
+      return data;
+    } catch (error) {
+      throw new Error('Failed to fetch images');
+    }
+  }
+
+  function renderImages(array, append = false) {
+    const markup = array
+      .map(
+        ({
+          largeImageURL,
+          webformatURL,
+          tags,
+          likes,
+          views,
+          comments,
+          downloads,
+        }) => {
+          return `
+            <div class="gallery">
+              <a href="${largeImageURL}">
+                <img src="${webformatURL}" alt="${tags}" title="${tags}" width="360" height="300" />
+                <ul class="info-cards-container">
+                  <li class="info-cards-elements">likes<span>${likes}</span></li>
+                  <li class="info-cards-elements">views<span>${views}</span></li>
+                  <li class="info-cards-elements">comments<span>${comments}</span></li>
+                  <li class="info-cards-elements">downloads<span>${downloads}</span></li>
+                </ul>
+              </a>
+            </div>
+          `;
+        }
+      )
+      .join('');
+
+    if (append) {
+      galleryEl.insertAdjacentHTML('beforeend', markup);
+    } else {
+      galleryEl.innerHTML = markup;
+    }
+
+    lightbox.refresh();
+  }
+
+  function renderError(error) {
+    const errorContainer = document.getElementById('error-container');
+    const errorElement = document.createElement('p');
+    errorElement.classList.add('error-message');
+    errorElement.textContent = error;
+    errorContainer.innerHTML = '';
+    errorContainer.appendChild(errorElement);
+    errorContainer.style.display = 'block';
+  }
+});
