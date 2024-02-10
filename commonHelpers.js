@@ -7,7 +7,7 @@ import{S as b,i as p,a as v}from"./assets/vendor-951421c8.js";(function(){const 
           alt="${l}" 
         />
       </a>
-      <div class="info" <style = display: flex;
+      <div class="info" style = display: flex;
   gap: 20px;
   margin-left: 10px;>
         <p class="info-item">
@@ -28,5 +28,5 @@ import{S as b,i as p,a as v}from"./assets/vendor-951421c8.js";(function(){const 
         </p>
       </div>
     </div>
-    `}function g({hits:t,totalHits:o}){if(d=Math.ceil(o/f),t.length>0){const n=t.map(q).join("");m.insertAdjacentHTML("beforeend",n),w.refresh(),$(),r>d&&p.info({position:"topRight",message:"We're sorry, but you've reached the end of search results."})}else p.error({position:"topRight",message:"Sorry, there are no images matching your search query. Please try again!"});x()}function x(){r>=d&&(u.style.display="none")}function $(){u.style.display="block",u.style.textalign="center"}
+    `}function g({hits:t,totalHits:o}){if(d=Math.ceil(o/f),t.length>0){const n=t.map(q).join("");m.insertAdjacentHTML("beforeend",n),w.refresh(),$(),r>d&&p.info({position:"topRight",message:"We're sorry, but you've reached the end of search results."})}else p.error({position:"topRight",message:"Sorry, there are no images matching your search query. Please try again!"});x()}function x(){r>=d&&(u.style.display="none")}function $(){u.style.display="block",u.style.textAlign="center"}
 //# sourceMappingURL=commonHelpers.js.map
