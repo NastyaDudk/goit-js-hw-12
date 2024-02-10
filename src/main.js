@@ -144,7 +144,7 @@ function hideButton() {
 }
 
 function showButton() {
-  loadMoreButton.style.display = 'block';
+  loadMoreButton.style.visibility = 'block';
   loadMoreButton.style.textAlign = 'center';
   if (page > totalPages) {
     return;
