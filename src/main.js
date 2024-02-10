@@ -25,16 +25,16 @@ async function onFormSubmit(e) {
   e.preventDefault();
   refs.galleryEl.innerHTML = searchQuery.value.trim();
   if (value !== '') {
-    refs.loader.style.visibility = 'visible';
+    refs.loaderElem.style.visibility = 'visible';
   }
   _page = 1;
   const data = await getUrl();
   if ((data.hits.length > 0) & (value !== '')) {
-    refs.loader.style.visibility = 'hidden';
+    refs.loaderElem.style.visibility = 'hidden';
     renderImages(data.hits);
     refs.btnLoad.style.visibility = 'visible';
   } else {
-    refs.loader.style.visibility = 'hidden';
+    refs.loaderElem.style.visibility = 'hidden';
     iziToast.error({
       message:
         'Sorry, there are no images matching your search query. Please try again!',
