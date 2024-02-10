@@ -26,7 +26,7 @@ submitBtn.addEventListener('click', event => {
   event.preventDefault();
   const savedSearch = localStorage.getItem('search-term');
   if (savedSearch === null || savedSearch === '') {
-    Notiflix.Notify.info('Please type something in the search input.');
+    iziToast.iziToast.info('Please type something in the search input.');
     return;
   }
   currentPage = 1;
@@ -48,13 +48,13 @@ const fetchImages = async (searchValue, currentPage) => {
     const response = await axios.get(
       `${PIXABAY_URL}?${params}&page=${currentPage}`
     );
-    // console.log('response: ', response);
+
     const imagesArray = response.data.hits;
-    // console.log('imagesArray: ', imagesArray);
+
     if (searchValue === '') {
     }
     if (imagesArray.length === 0) {
-      Notiflix.Notify.failure(
+      iziToast.iziToast.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
 
@@ -115,9 +115,9 @@ const fetchNewImages = async (searchValue, currentPage) => {
     const response = await axios.get(
       `${PIXABAY_URL}?${params}&page=${currentPage}`
     );
-    // console.log('response: ', response);
+
     const imagesArray = response.data.hits;
-    // console.log('imagesArray: ', imagesArray);
+
     if (imagesArray.length === 0) {
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
