@@ -96,7 +96,7 @@ function imageTemplate(images) {
           alt="${tags}" 
         />
       </a>
-      <div class="info" <style = display: flex;
+      <div class="info" style = display: flex;
   gap: 20px;
   margin-left: 10px;>
         <p class="info-item">
@@ -151,5 +151,5 @@ function hideButton() {
 
 function showButton() {
   loadMoreButton.style.display = 'block';
-  loadMoreButton.style.textalign = 'center';
+  loadMoreButton.style.textAlign = 'center';
 }
