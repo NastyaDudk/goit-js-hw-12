@@ -32,7 +32,7 @@ async function onFormSubmit(e) {
   }
   _page = 1;
   const data = await getUrl();
-  if ((data.hits.length > 0) & (value !== '')) {
+  if (data.hits.length > 0 && value !== '') {
     refs.loaderElem.style.visibility = 'hidden';
     renderImages(data.hits);
     refs.btnLoad.style.visibility = 'visible';
