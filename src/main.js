@@ -7,6 +7,7 @@ import Axios from 'axios';
 const galleryEl = document.getElementById('.gallery-el');
 const loadMoreBtn = document.getElementById('.load-more');
 const loaderEl = document.querySelector('.loader');
+const searchForm = document.querySelector('#search-form');
 
 const PIXABAY_URL = 'https://pixabay.com/api/';
 const PIXABAY_API_KEY = '2208122-c38407f0c226da94dd817bfa0';
