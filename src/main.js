@@ -55,9 +55,6 @@ async function onLoadMore() {
   renderImages(data);
   loaderContainer.style.display = 'none';
 
-  const galleryCard = document.querySelector('.photo-card');
-  const cardHeight = galleryCard.getBoundingClientRect().height;
-
   window.scrollBy({
     top: cardHeight * 2,
     behavior: 'smooth',
