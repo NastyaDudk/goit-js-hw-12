@@ -3,7 +3,7 @@ import{S as L,i as u,a as m}from"./assets/vendor-951421c8.js";(function(){const 
       <a class="photo-card-link" href="${i}">
         <img class="photo-card__img" src="${s}" alt="${r}" />
       </a>
-      <div class="info" style="display: flex; gap: 20px; margin-left: 10px;">
+      <div class="info" style ="display:flex; gap:20px;">
         <p class="info-item">
           <b class="info-item-title">Likes:</b>
           <span class="info-item-value">${e}</span>
