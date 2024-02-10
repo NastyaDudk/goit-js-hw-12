@@ -90,15 +90,9 @@ function imageTemplate(images) {
   return `
     <div class="photo-card">
       <a class="photo-card-link" href="${largeImageURL}">
-        <img
-          class="photo-card__img"
-          src="${webformatURL}" 
-          alt="${tags}" 
-        />
+        <img class="photo-card__img" src="${webformatURL}" alt="${tags}" />
       </a>
-      <div class="info" style = display: flex;
-  gap: 20px;
-  margin-left: 10px;>
+      <div class="info" style="display: flex; gap: 20px; margin-left: 10px;">
         <p class="info-item">
           <b class="info-item-title">Likes:</b>
           <span class="info-item-value">${likes}</span>
@@ -117,7 +111,7 @@ function imageTemplate(images) {
         </p>
       </div>
     </div>
-    `;
+  `;
 }
 
 function renderImages({ hits, totalHits }) {
@@ -144,10 +138,30 @@ function renderImages({ hits, totalHits }) {
 }
 
 function hideButton() {
-  if (page >= totalPages) {
+  if (page > totalPages) {
     loadMoreButton.style.display = 'none';
   }
 }
+
+function fetchImages(searchQuery, page) {
+  const apiKey = 'your_api_key';
+  const perPage = 12;
+  const url = `https://pixabay.com/api/?key=${apiKey}&q=${searchQuery}&page=${page}&per_page=${perPage}`;
+
+  axios
+    .get(url)
+    .then(res => {
+      const images = res.data.hits;
+      displayImages(images);
+      showButton();
+    })
+    .catch(err => console.error(err));
+}
+
+loadMoreButton.addEventListener('click', () => {
+  page += 1;
+  fetchImages(searchQuery, page);
+});
 
 function showButton() {
   loadMoreButton.style.display = 'block';
