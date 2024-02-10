@@ -4,77 +4,47 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import Axios from 'axios';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const formElem = document.querySelector('.form');
-  const galleryEl = document.querySelector('.gallery-el');
-  const loaderElem = document.querySelector('.loader');
-  const loadMoreBtn = document.querySelector('.load-more-btn');
+document.addEventListener('DOMContentLoaded', async () => {
+  const galleryEl = document.getElementById('gallery');
+  const loadMoreBtn = document.getElementById('load-more');
+  const loaderEl = document.querySelector('.loader');
+  const perPage = 15;
   let page = 1;
-  let searchQuery = '';
+  let currentQuery = '';
 
-  hideLoader();
+  const apiUrl = 'https://pixabay.com/api/';
+  const apiKey = '42153847-0f7baac2d7b2e92d7ce6bbe8e';
 
-  const lightbox = new SimpleLightbox('.gallery a', {
-    captionDelay: 250,
-  });
+  const lightbox = new SimpleLightbox('.gallery a');
 
-  formElem.addEventListener('submit', onSubmit);
-  loadMoreBtn.addEventListener('click', onLoadMore);
+  loadMoreBtn.addEventListener('click', searchImages);
 
-  function onSubmit(e) {
-    e.preventDefault();
-    showLoader();
-
-    searchQuery = formElem.querySelector('.input').value;
-    page = 1;
-    getPhotos()
-      .then(data => {
-        renderImages(data.hits);
-        toggleLoadMoreBtn(data.totalHits);
-      })
-      .catch(error => {
-        renderError(error);
-      })
-      .finally(() => {
-        hideLoader();
-      });
-  }
-
-  async function onLoadMore() {
-    showLoader();
-
-    page++;
-    getPhotos()
-      .then(data => {
-        const newImages = data.hits;
-        renderImages(newImages, true);
-        toggleLoadMoreBtn(data.totalHits);
-      })
-      .catch(error => {
-        renderError(error);
-      })
-      .finally(() => {
-        hideLoader();
-      });
-  }
-
-  async function getPhotos() {
-    const BASE_URL = 'https://pixabay.com/api/';
-    const KEY = '42153847-0f7baac2d7b2e92d7ce6bbe8e';
-    const params = `?key=${KEY}&q=${searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=15&page=${page}`;
-    const url = BASE_URL + params;
-
+  async function searchImages() {
     try {
-      const response = await Axios.get(url);
+      const query = '';
+      const response = await Axios.get(apiUrl, {
+        params: {
+          key: apiKey,
+          q: query,
+          per_page: perPage,
+          page: page,
+        },
+      });
+
       const data = response.data;
 
-      if (data.total === 0) {
+      if (data.hits.length > 0) {
+        const images = data.hits;
+        const append = page > 1;
+
+        renderImages(images, append);
+        page++;
+      } else {
         throw new Error('No images found');
       }
-
-      return data;
     } catch (error) {
-      throw new Error('Failed to fetch images');
+      console.log(error);
+      renderError('Error: Failed to fetch images');
     }
   }
 
@@ -91,18 +61,18 @@ document.addEventListener('DOMContentLoaded', () => {
           downloads,
         }) => {
           return `
-            <div class="gallery">
-              <a href="${largeImageURL}">
-                <img src="${webformatURL}" alt="${tags}" title="${tags}" width="360" height="300" />
-                <ul class="info-cards-container">
-                  <li class="info-cards-elements">likes<span>${likes}</span></li>
-                  <li class="info-cards-elements">views<span>${views}</span></li>
-                  <li class="info-cards-elements">comments<span>${comments}</span></li>
-                  <li class="info-cards-elements">downloads<span>${downloads}</span></li>
-                </ul>
-              </a>
-            </div>
-          `;
+          <div class="gallery">
+            <a href="${largeImageURL}">
+              <img src="${webformatURL}" alt="${tags}" title="${tags}" width="360" height="300" />
+              <ul class="info-cards-container">
+                <li class="info-cards-elements">likes<span>${likes}</span></li>
+                <li class="info-cards-elements">views<span>${views}</span></li>
+                <li class="info-cards-elements">comments<span>${comments}</span></li>
+                <li class="info-cards-elements">downloads<span>${downloads}</span></li>
+              </ul>
+            </a>
+          </div>
+        `;
         }
       )
       .join('');
@@ -125,4 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
     errorContainer.appendChild(errorElement);
     errorContainer.style.display = 'block';
   }
+
+  searchImages();
 });
