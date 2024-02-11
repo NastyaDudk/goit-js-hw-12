@@ -1,84 +1,152 @@
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
+import axios from 'axios';
 
-const form = document.querySelector('form#search-form');
-const gallery = document.querySelector('div.gallery');
-const loadMoreBtn = document.querySelector('button.load-more');
+const galleryContainer = document.querySelector('.gallery');
+const searchForm = document.querySelector('.search-form');
+const loaderContainer = document.querySelector('.loader');
+const loadMoreBtn = document.querySelector('.load-more-btn');
 
-form.addEventListener('submit', onSubmit);
-loadMoreBtn.addEventListener('click', onLoadMore);
+const GALLERY_LINK = 'gallery-link';
+let currentPage = 1;
+let searchQuery = '';
 
-function onSubmit(e) {
-  e.preventDefault();
-  loadMoreBtn.classList.add('is-hidden');
-  gallery.innerHTML = '';
-  imageApiService.query = e.currentTarget.elements.searchQuery.value.trim();
-  imageApiService.resetPage();
-  if (imageApiService.query === '') {
-    Notify.info('Please enter your search query!');
+searchForm.addEventListener('submit', async function (event) {
+  event.preventDefault();
+  searchQuery = event.target.elements.search.value.trim();
+
+  if (searchQuery === '') {
     return;
-  } else {
-    imageApiService
-      .getImage()
-      .then(data => {
-        let queriesArray = data.hits;
-        if (queriesArray.length === 0) {
-          Notify.failure(
-            'Sorry, there are no images matching your search query. Please try again.'
-          );
-        } else if (queriesArray.length < 40) {
-          renderImages(queriesArray);
-          loadMoreBtn.classList.add('is-hidden');
-          Notify.success(`Hooray! We found ${data.totalHits} images.`);
-          // Notify.info(
-          //   "We're sorry, but you've reached the end of search results."
-          // );
-        } else {
-          renderImages(queriesArray);
-          Notify.success(`Hooray! We found ${data.totalHits} images.`);
-          loadMoreBtn.classList.remove('is-hidden');
-        }
-      })
-      .catch(error => {
-        Notify.info(
-          "We're sorry, but you've reached the end of search results."
-        );
-        console.log(error);
-      });
   }
-}
 
-function onLoadMore() {
-  imageApiService.getImage().then(data => {
-    let queriesArray = data.hits;
-    renderImages(queriesArray);
-    if (queriesArray.length < 40) {
-      loadMoreBtn.classList.add('is-hidden');
-      Notify.info("We're sorry, but you've reached the end of search results.");
+  currentPage = 1;
+  galleryContainer.innerHTML = '';
+  loaderContainer.style.display = 'block';
+
+  try {
+    const { data } = await fetchImages(searchQuery, currentPage);
+    const { hits, total } = data;
+
+    if (hits.length > 0) {
+      const galleryHTML = hits.map(createGallery).join('');
+      galleryContainer.innerHTML = galleryHTML;
+      toastSuccess(`Was found: ${total} images`);
+
+      const lightbox = new SimpleLightbox(`.${GALLERY_LINK}`);
+      lightbox.refresh();
+
+      if (total > currentPage * 15) {
+        loadMoreBtn.style.display = 'block';
+      } else {
+        loadMoreBtn.style.display = 'none';
+      }
+    } else {
+      toastError(
+        'Sorry, there are no images matching your search query. Please try again!'
+      );
+      loadMoreBtn.style.display = 'none';
     }
+  } catch (error) {
+    toastError(`Error fetching images: ${error}`);
+  } finally {
+    loaderContainer.style.display = 'none';
+  }
+});
+
+loadMoreBtn.addEventListener('click', async function () {
+  loaderContainer.style.display = 'block';
+  currentPage++;
+
+  try {
+    const { data } = await fetchImages(searchQuery, currentPage);
+    const { hits } = data;
+
+    if (hits.length > 0) {
+      const galleryHTML = hits.map(createGallery).join('');
+      galleryContainer.innerHTML += galleryHTML;
+      const lightbox = new SimpleLightbox(`.${GALLERY_LINK}`);
+      lightbox.refresh();
+    } else {
+      loadMoreBtn.style.display = 'none';
+    }
+  } catch (error) {
+    toastError(`Error fetching more images: ${error}`);
+  } finally {
+    loaderContainer.style.display = 'none';
+  }
+});
+
+const toastOptions = {
+  titleColor: '#FFFFFF',
+  messageColor: '#FFFFFF',
+  messageSize: '16px',
+  position: 'topRight',
+  displayMode: 'replace',
+  closeOnEscape: true,
+  pauseOnHover: false,
+  maxWidth: 432,
+  messageLineHeight: '24px',
+};
+
+function toastError(message) {
+  iziToast.show({
+    message,
+    backgroundColor: '#EF4040',
+    progressBarColor: '#FFE0AC',
+    icon: 'icon-close',
+    ...toastOptions,
   });
 }
 
-function renderImages(queriesArray) {
-  const markup = queriesArray
-    .map(item => {
-      return `<div class="photo-card">
-  <div class="thumb"><img src="${item.webformatURL}" alt="${item.tags}" loading="lazy" /></div>
-  <div class="info">
-    <p class="info-item">
-      <b>Likes</b><span>${item.likes}</span>
-    </p>
-    <p class="info-item">
-      <b>Views</b><span>${item.views}</span>
-    </p>
-    <p class="info-item">
-      <b>Comments</b><span>${item.comments}</span>
-    </p>
-    <p class="info-item">
-      <b>Downloads</b><span>${item.downloads}</span>
-    </p>
-  </div>
-</div>`;
-    })
-    .join('');
-  gallery.insertAdjacentHTML('beforeend', markup);
+function toastSuccess(message) {
+  iziToast.show({
+    message,
+    backgroundColor: '#59A10D',
+    progressBarColor: '#B5EA7C',
+    icon: 'icon-chek',
+    ...toastOptions,
+  });
+}
+
+const BASE_URL = 'https://pixabay.com/api/';
+
+async function fetchImages(q, page) {
+  const params = new URLSearchParams({
+    key: '42205340-8125de1ae06f98e0344d3d2b5',
+    q,
+    image_type: 'photo',
+    orientation: 'horizontal',
+    safesearch: true,
+    page,
+    per_page: 15,
+  });
+
+  const url = `${BASE_URL}?${params}`;
+  return axios.get(url);
+}
+
+function createGallery({
+  largeImageURL,
+  tags,
+  webformatURL,
+  likes,
+  views,
+  comments,
+  downloads,
+}) {
+  return `
+  <a href="${largeImageURL}" class="${GALLERY_LINK}">
+     <figure>
+      <img src="${webformatURL}" alt="${tags}" class="gallery-image">
+      <figcaption class="gallery__figcaption">
+        <div class="image-item">Likes <span class="image-elem">${likes}</span></div>
+        <div class="image-item">Views <span class="image-elem">${views}</span></div>
+        <div class="image-item">Comments <span class="image-elem">${comments}</span></div>
+        <div class="image-item">Downloads <span class="image-elem">${downloads}</span></div>
+  </figcaption>
+  </figure>
+</a>
+`;
 }
