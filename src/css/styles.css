@@ -88,7 +88,4 @@ li {
   color: #fff;
   cursor: pointer;
   margin: 8px;
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
 }
