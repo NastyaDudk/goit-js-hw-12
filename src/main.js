@@ -21,22 +21,25 @@ document.addEventListener('DOMContentLoaded', () => {
   loadMoreBtn.addEventListener('click', onLoadMore);
 
   let searchValue = '';
+  let currentPage = 1;
 
   function onSubmit(e) {
     e.preventDefault();
     showLoader();
 
     searchValue = formElem.querySelector('.input').value;
-    getPhotoBySearch(searchValue)
+    currentPage = 1;
+    getPhotoBySearch(searchValue, currentPage)
       .then(data => {
         renderImages(data.hits);
+        showLoadMoreButton();
       })
       .catch(error => {
         renderError(error);
+        hideLoadMoreButton();
       })
       .finally(() => {
         hideLoader();
-        showLoadMoreButton();
       });
 
     formElem.reset();
@@ -44,26 +47,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function onLoadMore() {
     showLoader();
-
-    getPhotoBySearch(searchValue)
+    currentPage++;
+    getPhotoBySearch(searchValue, currentPage)
       .then(data => {
         renderImages(data.hits);
+        showLoadMoreButton();
       })
       .catch(error => {
         renderError(error);
+        hideLoadMoreButton();
       })
       .finally(() => {
         hideLoader();
       });
   }
 
-  function getPhotoBySearch(searchValue) {
+  function getPhotoBySearch(searchValue, page) {
     const BASE_URL = 'https://pixabay.com/api/';
     const KEY = '42153847-0f7baac2d7b2e92d7ce6bbe8e';
     const Query = `?key=${KEY}&q=${searchValue}`;
     const params =
       '&image_type=photo&orientation=horizontal&safesearch=true&per_page=20';
-    const url = BASE_URL + Query + params;
+    const url = BASE_URL + Query + params + `&page=${page}`;
 
     return fetch(url)
       .then(res => res.json())
