@@ -1,6 +1,5 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
-const imageApiService = new ImagesApiService();
 const form = document.querySelector('form#search-form');
 const gallery = document.querySelector('div.gallery');
 const loadMoreBtn = document.querySelector('button.load-more');
