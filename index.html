@@ -1,30 +1,31 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Page title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Search</title>
     
   <script type="module" crossorigin src="/goit-js-hw-12/commonHelpers.js"></script>
-  <link rel="modulepreload" crossorigin href="/goit-js-hw-12/assets/vendor-a2f273c8.js">
+  <link rel="modulepreload" crossorigin href="/goit-js-hw-12/assets/vendor-2618a76b.js">
+  <link rel="stylesheet" href="/goit-js-hw-12/assets/vendor-fd638ea2.css">
   <link rel="stylesheet" href="/goit-js-hw-12/assets/index-e4226a96.css">
 </head>
 
 <body>
-    <section class="section">
-        <form class="search-form" id="search-form">
-            <input type="text" name="searchQuery" autocomplete="off" placeholder="Search images..." />
-            <button type="submit" class="submit">Search</button>
-        </form>
-    </section>
     <div class="container">
-        <div class="gallery">
 
+        <form id="search-form" class="search-form">
+            <input type="text" id="search" placeholder="picture">
+            <button type="submit">Search</button>
+        </form>
+
+
+        <div class="loader">
+            Loading
         </div>
-        <button type="button" class="load-more is-hidden">Load more</button>
+        <div id="gallery" class="gallery"></div>
     </div>
+
     
 </body>
-
-</html>
