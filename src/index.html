@@ -1,45 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet" />
-
-    <link rel="stylesheet" href="./css/styles.css">
-
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page title</title>
+    <link rel="stylesheet" href="./css/styles.css" />
 </head>
 
 <body>
-
-    <div class="container">
-        <form class="form">
-            <label>
-                <input type="text" class="input" name="searchQuery" placeholder="Search images..." required />
-            </label>
-            <button class="button" type="submit">Search</button>
+    <section class="section">
+        <form class="search-form" id="search-form">
+            <input type="text" name="searchQuery" autocomplete="off" placeholder="Search images..." />
+            <button type="submit" class="submit">Search</button>
         </form>
-        <div class="loader">Loading...</div>
-        <div class="gallery-el">
-
+    </section>
+    <div class="container">
+        <div class="gallery">
+            <!-- Картки зображень -->
         </div>
-        <div>
-            <button class="load-more">Load More</button>
-        </div>
+        <button type="button" class="load-more is-hidden">Load more</button>
     </div>
-
-
-
-
-
-    <script type="module" src="./main.js"></script>
-
+    <script type="module" src="./js/index.js"></script>
 </body>
 
 </html>
