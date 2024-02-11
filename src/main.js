@@ -9,7 +9,7 @@ const gallery = document.querySelector('.gallery-el');
 const loader = document.querySelector('.loader');
 const loadBtn = document.querySelector('.load-more-button');
 
-const lightbox = new SimpleLightbox('.gallery a');
+const lightbox = new SimpleLightbox('.gallery-link');
 let page = 1;
 let perPage = 15;
 loadBtn.style.display = 'none';
