@@ -5,9 +5,9 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const form = document.querySelector('.form');
-const gallery = document.querySelector('.gallery');
+const gallery = document.querySelector('.gallery-el');
 const loader = document.querySelector('.loader');
-const loadBtn = document.querySelector('.more');
+const loadBtn = document.querySelector('.load-more-btn');
 const lightBox = new SimpleLightbox('.gallery-link');
 let page = 1;
 let perPage = 15;
