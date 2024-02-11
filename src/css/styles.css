@@ -69,8 +69,6 @@ li {
   flex-wrap: wrap;
   margin-top: 40px;
   justify-content: center;
-  flex-shrink: 0;
-  border: 1px solid #808080;
   margin: 15px;
 }
 
@@ -88,4 +86,8 @@ li {
   color: #fff;
   cursor: pointer;
   margin: 8px;
+}
+
+.more-but {
+  text-align: center;
 }
