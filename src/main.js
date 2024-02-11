@@ -16,61 +16,64 @@ document.addEventListener('DOMContentLoaded', () => {
     captionDelay: 250,
   });
 
-  formElem.addEventListener('submit', onSubmit);
-  loadMoreButton.addEventListener('click', onLoadMore);
+  HTMLFormElement.addEventListener('submit', eventt => {
+    eventt.preventDefault();
 
-  async function onSubmit(e) {
-    e.preventDefault();
-    showLoader();
+    formElem.addEventListener('submit', onSubmit);
+    loadMoreButton.addEventListener('click', onLoadMore);
 
-    const value = formElem.querySelector('.input').value;
+    async function onSubmit(e) {
+      e.preventDefault();
+      showLoader();
 
-    try {
-      const data = await getPhotoBySearch(value);
-      renderImages(data.hits);
-    } catch (error) {
-      renderError(error);
-    } finally {
-      hideLoader();
+      const value = formElem.querySelector('.input').value;
+
+      try {
+        const data = await getPhotoBySearch(value);
+        renderImages(data.hits);
+      } catch (error) {
+        renderError(error);
+      } finally {
+        hideLoader();
+      }
+
+      formElem.reset();
     }
 
-    formElem.reset();
-  }
+    async function getPhotoBySearch(searchValue, page = 1) {
+      const KEY = '42153847-0f7baac2d7b2e92d7ce6bbe8e';
+      const params = {
+        key: KEY,
+        q: searchValue,
+        image_type: 'photo',
+        orientation: 'horizontal',
+        safesearch: true,
+        per_page: 15,
+        page: page,
+      };
 
-  async function getPhotoBySearch(searchValue, page = 1) {
-    const KEY = '42153847-0f7baac2d7b2e92d7ce6bbe8e';
-    const params = {
-      key: KEY,
-      q: searchValue,
-      image_type: 'photo',
-      orientation: 'horizontal',
-      safesearch: true,
-      per_page: 15,
-      page: page,
-    };
+      const response = await axios.get('https://pixabay.com/api/', { params });
 
-    const response = await axios.get('https://pixabay.com/api/', { params });
+      if (response.data.total === 0) {
+        throw new Error('No images found');
+      }
 
-    if (response.data.total === 0) {
-      throw new Error('No images found');
+      return response.data;
     }
 
-    return response.data;
-  }
-
-  function renderImages(array) {
-    const markup = array
-      .map(
-        ({
-          largeImageURL,
-          webformatURL,
-          tags,
-          likes,
-          views,
-          comments,
-          downloads,
-        }) => {
-          return `
+    function renderImages(array) {
+      const markup = array
+        .map(
+          ({
+            largeImageURL,
+            webformatURL,
+            tags,
+            likes,
+            views,
+            comments,
+            downloads,
+          }) => {
+            return `
         <div class="gallery">
           <a href="${largeImageURL}">
             <img src="${webformatURL}" alt="${tags}" title="${tags}" width="360" height="300" />
@@ -83,29 +86,30 @@ document.addEventListener('DOMContentLoaded', () => {
           </a>
         </div>
       `;
-        }
-      )
-      .join('');
+          }
+        )
+        .join('');
 
-    galleryEl.innerHTML += markup;
-    lightbox.refresh();
-  }
+      galleryEl.innerHTML += markup;
+      lightbox.refresh();
+    }
 
-  function renderError(error) {
-    galleryEl.innerHTML = '';
-    iziToast.show({
-      message: `❌ "${error.message}". Please try again!`,
-      color: 'red',
-      position: 'topRight',
-      maxWidth: '400px',
-    });
-  }
+    function renderError(error) {
+      galleryEl.innerHTML = '';
+      iziToast.show({
+        message: `❌ "${error.message}". Please try again!`,
+        color: 'red',
+        position: 'topRight',
+        maxWidth: '400px',
+      });
+    }
 
-  function showLoader() {
-    loaderElem.style.display = 'block';
-  }
+    function showLoader() {
+      loaderElem.style.display = 'block';
+    }
 
-  function hideLoader() {
-    loaderElem.style.display = 'none';
-  }
+    function hideLoader() {
+      loaderElem.style.display = 'none';
+    }
+  });
 });
