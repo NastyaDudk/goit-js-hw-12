@@ -4,12 +4,12 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import axios from 'axios';
 
-const input = document.querySelector('.searchQuery');
+const input = document.querySelector('.input');
 const form = document.querySelector('.form');
 const container = document.querySelector('.gallery-el');
 const loaderContainer = document.querySelector('.loader');
 const loadMoreButton = document.querySelector('.load-more-btn');
-const lightbox = new SimpleLightbox('.photo-card-link', {
+const lightbox = new SimpleLightbox({
   captionDelay: 250,
   captionsData: 'alt',
 });
@@ -146,7 +146,4 @@ function hideButton() {
 function showButton() {
   loadMoreButton.style.visibility = 'block';
   loadMoreButton.style.textAlign = 'center';
-  if (page > totalPages) {
-    return;
-  }
 }
