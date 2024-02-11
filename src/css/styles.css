@@ -64,17 +64,14 @@ li {
 }
 
 .gallery {
-  flex-shrink: 0;
-  border: 1px solid #808080;
-  margin: 15px;
-}
-
-.gallery-el {
   gap: 30px;
   display: flex;
   flex-wrap: wrap;
   margin-top: 40px;
   justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid #808080;
+  margin: 15px;
 }
 
 .loader {
