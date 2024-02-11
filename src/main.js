@@ -5,8 +5,8 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 
 import axios from 'axios';
 
-const searchForm = document.querySelector('.js-search-form');
-const list = document.querySelector('.gallery');
+const searchForm = document.querySelector('.form');
+const list = document.querySelector('#gallery');
 let spanLoader = document.querySelector('.loader');
 let loadBtn;
 
@@ -105,10 +105,10 @@ function imageTemplate(arr) {
                 <a href="${largeImageURL}"><img src="${webformatURL}" alt="${tags}" class="gallery-image"></a>
             </div>
             <div class="gallery-card">
-                <p><span class="description">Likes</span>${likes}</p>
-                <p><span class="description">Views</span>${views}</p>
-                <p><span class="description">Comments</span>${comments}</p>
-                <p><span class="description">Downloads</span>${downloads}</p>
+                <p><span class="description">Likes:</span>${likes}</p>
+                <p><span class="description">Views:</span>${views}</p>
+                <p><span class="description">Comments:</span>${comments}</p>
+                <p><span class="description">Downloads:</span>${downloads}</p>
             </div>
         </li>`
     )
