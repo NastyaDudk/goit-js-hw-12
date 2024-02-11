@@ -2,161 +2,157 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+import errorIcon from '../src/img/bi_x-octagon.svg';
 import axios from 'axios';
 
-const form = document.querySelector('.form');
-const gallery = document.querySelector('.gallery-el');
-const loader = document.querySelector('.loader');
-const loadBtn = document.querySelector('.load-more-button');
+const searchForm = document.querySelector('.js-search-form');
+const list = document.querySelector('.gallery');
+let spanLoader = document.querySelector('.loader');
+let loadBtn;
 
-const lightbox = new SimpleLightbox('.gallery-link');
+const gallery = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
+
 let page = 1;
 let perPage = 15;
-loadBtn.style.display = 'none';
-loader.style.display = 'none';
-const searchParams = {
-  key: '42129451-ab1d1e3d1abd6a79c6499a83d',
-  q: '',
-  image_type: 'photo',
-  orientation: 'horizontal',
-  safesearch: true,
-  per_page: perPage,
-};
+let totalPages;
 
-form.addEventListener('submit', async e => {
+const handleSubmit = async e => {
   e.preventDefault();
-  page = 1;
-  loadBtn.style.display = 'none';
-  gallery.innerHTML = '';
-  const inputText = form.elements.search.value.trim();
-  if (inputText === '') {
-    iziToast.show({
-      message: 'Please write search image',
-      messageColor: '#FAFAFB',
-      backgroundColor: '#EF4040',
-      position: 'topRight',
-    });
-    return;
-  } else {
-    loader.style.display = 'inline-block';
-    searchParams.q = inputText;
-    searchParams.page = page;
-    try {
-      const images = await fetchImage();
-      if (images.totalHits === 0) {
-        iziToast.show({
-          message:
-            'Sorry, there are no images matching your search query. Please try again!',
-          messageColor: '#FAFAFB',
-          backgroundColor: '#EF4040',
-          position: 'topRight',
-        });
-        loader.style.display = 'none';
+
+  const value = e.target.elements.search.value;
+
+  loadBtn = document.querySelector('.loadBtn');
+  if (loadBtn) loadBtn.remove();
+
+  if (value !== '') {
+    page = 1;
+    list.innerHTML = '';
+
+    searchForm.insertAdjacentHTML('afterend', '<span class="loader"></span>');
+    spanLoader = document.querySelector('.loader');
+
+    const data = await getPictures(value);
+    setTimeout(() => {
+      if (spanLoader) spanLoader.remove();
+      renderImages(data.hits);
+
+      totalPages = Math.ceil(data.totalHits / perPage);
+      if (page < totalPages) {
+        addButtonLoad(value);
       } else {
-        renderGallery(images);
-        if (images.totalHits < perPage) {
-          notification();
-        } else {
-          loadBtn.style.display = 'block';
+        if (data.hits.length !== 0) {
+          iziToast.error({
+            position: 'topRight',
+            message:
+              "We're sorry, but you've reached the end of search results.",
+          });
         }
       }
-    } catch (error) {
-      iziToast.show({
-        message: `Sorry, ${error}`,
-        messageColor: '#FAFAFB',
-        backgroundColor: '#EF4040',
-        position: 'topRight',
-      });
-    }
+    }, 500);
   }
+  searchForm.reset();
+};
 
-  form.reset();
-});
+const getPictures = async value => {
+  const response = await axios.get('https://pixabay.com/api/', {
+    params: {
+      key: '42121827-736028e2edd071afefc989558',
+      q: `${value}`,
+      image_type: 'photo',
+      orientation: 'horizontal',
+      safesearch: true,
+      per_page: perPage,
+      page: page,
+    },
+  });
 
-loadBtn.addEventListener('click', async () => {
-  page += 1;
-  searchParams.page = page;
-  loader.style.display = 'inline-block';
-  try {
-    const images = await fetchImage();
-    renderGallery(images);
-    scroll();
-    if (perPage * page > images.totalHits) {
-      notification();
-    }
-  } catch (error) {
-    iziToast.show({
-      message: `Sorry, ${error}`,
-      messageColor: '#FAFAFB',
-      backgroundColor: '#EF4040',
-      position: 'bottomCenter',
+  return response.data;
+};
+
+function renderImages(arr) {
+  if (arr.length === 0) {
+    return iziToast.show({
+      message: `Sorry, there are no images matching<br>your search query. Please try again!`,
+      messageColor: 'rgba(255, 255, 255, 1)',
+      backgroundColor: 'rgba(239, 64, 64, 1)',
+      iconUrl: errorIcon,
+      position: 'topRight',
     });
   }
-});
-
-async function fetchImage() {
-  const urlparams = new URLSearchParams(searchParams);
-  const response = await axios.get(`https://pixabay.com/api/?${urlparams}`);
-  return response.data;
+  const markup = imageTemplate(arr);
+  list.insertAdjacentHTML('beforeend', markup);
+  gallery.on('show.simplelightbox');
+  gallery.refresh();
 }
 
-function renderGallery(images) {
-  const item = images.hits
+function imageTemplate(arr) {
+  return arr
     .map(
-      image => `<li class="gallery-item">
-    <a class="gallery-link" href="${image.largeImageURL}" >
-      <img
-        class="gallery-image"
-        src="${image.webformatURL}"
-        alt="${image.tags}"
-        width = "360"
-      />
-    </a>
-    <div class="img-text">
-      <div class="img-info">
-        <h3>Likes</h3>
-        <p> ${image.likes}</p>
-      </div>
-      <div class="img-info">
-        <h3>Views</h3>
-        <p> ${image.views}</p>
-      </div>
-      <div class="img-info">
-        <h3>Comments</h3>
-        <p> ${image.comments}</p>
-      </div>
-      <div class="img-info">
-        <h3>Downloads</h3>
-        <p> ${image.downloads}</p>
-      </div>
-    </div>
-  </li>`
+      ({
+        largeImageURL,
+        webformatURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
+      }) =>
+        `<li class="gallery-item">
+            <div class="image-container">
+                <a href="${largeImageURL}"><img src="${webformatURL}" alt="${tags}" class="gallery-image"></a>
+            </div>
+            <div class="gallery-card">
+                <p><span class="description">Likes</span>${likes}</p>
+                <p><span class="description">Views</span>${views}</p>
+                <p><span class="description">Comments</span>${comments}</p>
+                <p><span class="description">Downloads</span>${downloads}</p>
+            </div>
+        </li>`
     )
     .join('');
-
-  gallery.insertAdjacentHTML('beforeend', item);
-  lightBox.refresh();
-
-  loader.style.display = 'none';
 }
 
-function notification() {
-  iziToast.show({
-    message: 'We are sorry, but you have reached the end of search results.',
-    messageColor: '#FAFAFB',
-    backgroundColor: '#1DB8F5',
-    position: 'topRight',
+function addButtonLoad(value) {
+  list.insertAdjacentHTML(
+    'afterend',
+    '<button type="button" class="loadBtn">Load more</button>'
+  );
+  loadBtn = document.querySelector('.loadBtn');
+
+  loadBtn.addEventListener('click', async () => {
+    loadBtn.insertAdjacentHTML('beforebegin', '<span class="loader"></span>');
+    loadBtn.remove();
+
+    page += 1;
+
+    const data = await getPictures(value);
+    setTimeout(() => {
+      spanLoader = document.querySelector('.loader');
+      if (spanLoader) spanLoader.remove();
+      renderImages(data.hits);
+      list.parentNode.insertBefore(loadBtn, list.nextSibling);
+
+      if (page >= totalPages) {
+        loadBtn.remove();
+        iziToast.error({
+          position: 'topRight',
+          message: "We're sorry, but you've reached the end of search results.",
+        });
+      }
+
+      const galleryItem = document.querySelector('.gallery-item:last-child');
+      if (galleryItem) {
+        const rect = galleryItem.getBoundingClientRect().height;
+        window.scrollBy({
+          top: rect * 2,
+          behavior: 'smooth',
+        });
+      }
+    }, 500);
   });
-  loadBtn.style.display = 'none';
-  loader.style.display = 'none';
 }
 
-function scroll() {
-  const listItem = document.querySelector('.gallery-item');
-  const heightScroll = listItem.getBoundingClientRect().height * 2;
-  window.scrollBy({
-    top: heightScroll,
-    left: 0,
-    behavior: 'smooth',
-  });
-}
+searchForm.addEventListener('submit', handleSubmit);

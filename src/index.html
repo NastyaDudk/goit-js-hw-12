@@ -2,52 +2,28 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet" />
-
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/2.1.0/simplelightbox.min.css" />
-    <link rel="stylesheet" href="./css/styles.css">
-
-
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Homework 12</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="./css/styles.css" />
 </head>
 
 <body>
-
-    <div class="container">
-        <form class="form" id="form" autocomplete="off">
-
-            <input type="text" class="input" id="searchQuery" name="searchQuery" placeholder="Search images..."
-                required />
-
-            <button class="button" type="submit">Search</button>
-
+    <div class="block">
+        <form class="search-form js-search-form">
+            <div>
+                <input type="text" class="input-form" name="search" placeholder="Search images..." />
+            </div>
+            <button type="submit" class="searchBtn js-searchBtn">Search</button>
         </form>
 
-        <div class="gallery-el" id="gallery"></div>
-
-        <div class="loader" id="loader">Loading...</div>
-
-        <div class="morebut" style="text-align: center;">
-            <button class="load-more-btn">Load More</button>
-
-        </div>
+        <ul class="gallery js-list"></ul>
     </div>
 
-
-
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/izitoast/dist/js/iziToast.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simplelightbox@2.1.0/dist/simple-lightbox.min.js"></script>
     <script type="module" src="./main.js"></script>
-
 </body>
 
 </html>
