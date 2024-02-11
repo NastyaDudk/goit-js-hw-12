@@ -19,7 +19,7 @@
 <body>
 
     <div class="container">
-        <form class="form" id="form">
+        <form class="form" id="form" autocomplete="off">
 
             <input type="text" class="input" id="searchQuery" name="searchQuery" placeholder="Search images..."
                 required />
@@ -28,11 +28,13 @@
 
         </form>
 
-        <div class="gallery-el"></div>
+        <div class="gallery-el" id="gallery"></div>
+
+        <div class="loader" id="loader">Loading...</div>
 
         <div class="morebut" style="text-align: center;">
             <button class="load-more-btn">Load More</button>
-            <div class="loader" id="loader">Loading...</div>
+
         </div>
     </div>
 
