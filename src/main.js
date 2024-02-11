@@ -2,26 +2,50 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+import Axios from 'axios';
 
 document.addEventListener('DOMContentLoaded', () => {
   const formElem = document.querySelector('.form');
   const galleryEl = document.querySelector('.gallery-el');
   const loaderElem = document.querySelector('.loader');
+  const loadMoreBtn = document.querySelector('.load-more');
 
   hideLoader();
+  hideLoadMoreButton();
 
   const lightbox = new SimpleLightbox('.gallery a', {
     captionDelay: 250,
   });
 
   formElem.addEventListener('submit', onSubmit);
+  loadMoreBtn.addEventListener('click', onLoadMore);
+
+  let searchValue = '';
 
   function onSubmit(e) {
     e.preventDefault();
     showLoader();
 
-    const value = formElem.querySelector('.input').value;
-    getPhotoBySearch(value)
+    searchValue = formElem.querySelector('.input').value;
+    getPhotoBySearch(searchValue)
+      .then(data => {
+        renderImages(data.hits);
+      })
+      .catch(error => {
+        renderError(error);
+      })
+      .finally(() => {
+        hideLoader();
+        showLoadMoreButton();
+      });
+
+    formElem.reset();
+  }
+
+  function onLoadMore() {
+    showLoader();
+
+    getPhotoBySearch(searchValue)
       .then(data => {
         renderImages(data.hits);
       })
@@ -31,8 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
       .finally(() => {
         hideLoader();
       });
-
-    formElem.reset();
   }
 
   function getPhotoBySearch(searchValue) {
@@ -54,35 +76,34 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderImages(array) {
-    const markup = array
-      .map(
-        ({
-          largeImageURL,
-          webformatURL,
-          tags,
-          likes,
-          views,
-          comments,
-          downloads,
-        }) => {
-          return `
-        <div class="gallery">
-          <a href="${largeImageURL}">
-            <img src="${webformatURL}" alt="${tags}" title="${tags}" width="360" height="300" />
-            <ul class="info-cards-container">
-              <li class="info-cards-elements">likes<span>${likes}</span></li>
-              <li class="info-cards-elements">views<span>${views}</span></li>
-              <li class="info-cards-elements">comments<span>${comments}</span></li>
-              <li class="info-cards-elements">downloads<span>${downloads}</span></li>
-            </ul>
-          </a>
-        </div>
-      `;
-        }
-      )
-      .join('');
+    let markup = '';
+    array.forEach(
+      ({
+        largeImageURL,
+        webformatURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
+      }) => {
+        markup += `
+          <div class="gallery">
+            <a href="${largeImageURL}">
+              <img src="${webformatURL}" alt="${tags}" title="${tags}" width="360" height="300" />
+              <ul class="info-cards-container">
+                <li class="info-cards-elements">likes<span>${likes}</span></li>
+                <li class="info-cards-elements">views<span>${views}</span></li>
+                <li class="info-cards-elements">comments<span>${comments}</span></li>
+                <li class="info-cards-elements">downloads<span>${downloads}</span></li>
+              </ul>
+            </a>
+          </div>
+        `;
+      }
+    );
 
-    galleryEl.innerHTML = markup;
+    galleryEl.insertAdjacentHTML('beforeend', markup);
     lightbox.refresh();
   }
 
