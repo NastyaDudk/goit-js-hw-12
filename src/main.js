@@ -5,7 +5,7 @@ import 'izitoast/dist/css/iziToast.min.css';
 import axios from 'axios';
 
 const form = document.querySelector('#form');
-const gallery = document.querySelector('.gallery-el');
+const gallery = document.querySelector('.gallery');
 const spinner = document.querySelector('#loader');
 const loadMoreBtn = document.querySelector('.load-more-btn');
 
