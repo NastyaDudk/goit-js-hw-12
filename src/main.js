@@ -38,11 +38,11 @@ function toastError(message) {
 }
 
 function toggleLoadMoreBtn(show) {
-  loadMoreBtn.style.display = show ? 'block' : 'none';
+  loadMoreBtn.style.display = show ? '' : 'none';
 }
 
 function showLoadMoreBtn() {
-  loadMoreBtn.style.display = 'block';
+  loadMoreBtn.style.display = 'none';
 }
 
 function hideLoadMoreBtn() {
