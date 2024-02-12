@@ -42,11 +42,11 @@ function toggleLoadMoreBtn(show) {
 }
 
 function showLoadMoreBtn() {
-  loadMoreBtn.style.display = 'none';
+  loadMoreBtn.style.display = 'block';
 }
 
 function hideLoadMoreBtn() {
-  loadMoreBtn.style.display = 'block';
+  loadMoreBtn.style.display = 'none';
 }
 
 async function searchImages(query, page = 1) {
