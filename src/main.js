@@ -37,6 +37,18 @@ function toastError(message) {
   });
 }
 
+function toggleLoadMoreBtn(show) {
+  loadMoreBtn.style.display = show ? 'block' : 'none';
+}
+
+function showLoadMoreBtn() {
+  loadMoreBtn.style.display = 'block';
+}
+
+function hideLoadMoreBtn() {
+  loadMoreBtn.style.display = 'none';
+}
+
 async function searchImages(query, page = 1) {
   const url = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(
     query
@@ -70,13 +82,13 @@ searchForm.addEventListener('submit', async function (event) {
       displayImages(images);
       toastSuccess(`Was found: ${images.length} images`);
       initializeLightbox();
-      showBtn();
+      showLoadMoreBtn();
     } else {
       galleryContainer.innerHTML = '';
       toastError(
         'Sorry, there are no images matching your search query. Please try again!'
       );
-      hideBtn();
+      hideLoadMoreBtn();
     }
   } catch (error) {
     console.error('Error fetching images:', error);
@@ -98,12 +110,12 @@ loadMoreBtn.addEventListener('click', async function () {
       initializeLightbox();
       if (images.length < 15) {
         toastError('No more images to load');
-        hideBtn();
+        hideLoadMoreBtn();
       }
       smoothScrollToNextImages();
     } else {
       toastError('No more images to load');
-      hideBtn();
+      hideLoadMoreBtn();
     }
   } catch (error) {
     console.error('Error fetching images:', error);
