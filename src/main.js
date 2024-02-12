@@ -10,6 +10,10 @@ const searchForm = document.getElementById('search-form');
 const loadMoreBtn = document.getElementById('load-more');
 const loadingIndicator = document.getElementById('loading-indicator');
 
+function hideLoadMoreBtn() {
+  loadMoreBtn.style.display = 'none';
+}
+
 const apiKey = '42175181-9f2e4ea0c75ffabf50c3ef9f9';
 let currentPage = 1;
 let currentQuery = '';
@@ -36,6 +40,8 @@ function toastError(message) {
     position: 'topRight',
   });
 }
+
+hideLoadMoreBtn();
 
 async function searchImages(query, page = 1) {
   const url = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(
@@ -70,13 +76,13 @@ searchForm.addEventListener('submit', async function (event) {
       displayImages(images);
       toastSuccess(`Was found: ${images.length} images`);
       initializeLightbox();
-      showLoadMoreBtn();
+      showBtn();
     } else {
       galleryContainer.innerHTML = '';
       toastError(
         'Sorry, there are no images matching your search query. Please try again!'
       );
-      hideLoadMoreBtn();
+      hideBtn();
     }
   } catch (error) {
     console.error('Error fetching images:', error);
@@ -98,12 +104,12 @@ loadMoreBtn.addEventListener('click', async function () {
       initializeLightbox();
       if (images.length < 15) {
         toastError('No more images to load');
-        hideLoadMoreBtn();
+        hideBtn();
       }
       smoothScrollToNextImages();
     } else {
       toastError('No more images to load');
-      hideLoadMoreBtn();
+      hideBtn();
     }
   } catch (error) {
     console.error('Error fetching images:', error);
