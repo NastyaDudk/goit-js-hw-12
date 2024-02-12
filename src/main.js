@@ -62,7 +62,7 @@ searchForm.addEventListener('submit', async function (event) {
   if (!query) {
     iziToast.warning({
       title: 'Warning',
-      message: 'Please enter a search query.',
+      message: 'Search Images...',
     });
     return;
   }
