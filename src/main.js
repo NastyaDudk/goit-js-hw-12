@@ -43,7 +43,7 @@ function toggleLoadMoreBtn(show) {
 }
 
 function showLoadMoreBtn() {
-  loadMoreBtn.style.display = 'none';
+  loadMoreBtn.style.display = '';
 }
 
 function hideLoadMoreBtn() {
