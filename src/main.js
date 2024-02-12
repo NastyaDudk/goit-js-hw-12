@@ -37,15 +37,6 @@ function toastError(message) {
   });
 }
 
-function toggleLoadMoreBtn(show) {
-  loadMoreBtn.style.display = show ? 'inline-block' : 'none';
-  loadMoreBtn.style.margin = show ? '0 auto' : '';
-}
-
-function hideLoadMoreBtn() {
-  loadMoreBtn.style.display = 'none';
-}
-
 async function searchImages(query, page = 1) {
   const url = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(
     query
