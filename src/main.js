@@ -41,10 +41,6 @@ function toggleLoadMoreBtn(show) {
   loadMoreBtn.style.display = show ? 'block' : 'none';
 }
 
-function showLoadMoreBtn() {
-  loadMoreBtn.style.display = 'block';
-}
-
 function hideLoadMoreBtn() {
   loadMoreBtn.style.display = 'none';
 }
