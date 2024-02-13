@@ -41,6 +41,8 @@ function showLoadMoreBtn(show) {
   loadMoreBtn.style.display = show ? 'block' : 'none';
 }
 
+let totalHits = 0;
+
 async function searchImages(query, page = 1) {
   const url = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(
     query
