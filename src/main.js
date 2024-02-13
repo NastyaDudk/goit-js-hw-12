@@ -45,26 +45,39 @@ async function searchImages(query, page = 1) {
   const url = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(
     query
   )}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=15`;
-  const response = await fetch(url);
-  const data = await response.json();
+  try {
+    const response = await axios.get(url);
+    totalHits = response.data.totalHits;
+    return response.data.hits;
+  } catch (error) {
+    console.error('Error fetching images:', error);
+    toastError('Failed to fetch images.');
+    throw error;
+  }
+}
 
-  return data.hits;
+async function scrollToNextGroup() {
+  const cardHeight = galleryContainer
+    .querySelector('.image-card')
+    .getBoundingClientRect().height;
+  window.scrollBy({
+    top: 2 * cardHeight,
+    left: 0,
+    behavior: 'smooth',
+  });
 }
 
 searchForm.addEventListener('submit', async function (event) {
   event.preventDefault();
   toggleLoadMoreBtn(false);
-
   const query = document.getElementById('query').value.trim();
-
   if (!query) {
     iziToast.warning({
       title: 'Warning',
-      message: 'Search images...',
+      message: 'Please enter a search query.',
     });
     return;
   }
-
   try {
     loaderContainer.style.display = 'block';
     currentQuery = query;
@@ -74,17 +87,14 @@ searchForm.addEventListener('submit', async function (event) {
       displayImages(images);
       toastSuccess(`Was found: ${images.length} images`);
       initializeLightbox();
-      showLoadMoreBtn();
+      toggleLoadMoreBtn(true);
     } else {
       galleryContainer.innerHTML = '';
       toastError(
         'Sorry, there are no images matching your search query. Please try again!'
       );
-      hideLoadMoreBtn();
+      toggleLoadMoreBtn(false);
     }
-  } catch (error) {
-    console.error('Error fetching images:', error);
-    toastError('Failed to fetch images.');
   } finally {
     loaderContainer.style.display = 'none';
   }
@@ -101,13 +111,15 @@ loadMoreBtn.addEventListener('click', async function () {
       toastSuccess(`Loaded additional ${images.length} images`);
       initializeLightbox();
       if (images.length < 15) {
-        toastError('No more images to load');
-        hideLoadMoreBtn();
+        toastError(
+          'We are sorry, but you have reached the end of search results.'
+        );
+        toggleLoadMoreBtn(false);
       }
-      smoothScrollToNextImages();
+      scrollToNextGroup();
     } else {
       toastError('No more images to load');
-      hideLoadMoreBtn();
+      toggleLoadMoreBtn(false);
     }
   } catch (error) {
     console.error('Error fetching images:', error);
@@ -118,35 +130,35 @@ loadMoreBtn.addEventListener('click', async function () {
   }
 });
 
-function smoothScrollToNextImages() {
-  const imageCardHeight = galleryContainer
-    .querySelector('.image-card')
-    .getBoundingClientRect().height;
-  const scrollDistance = imageCardHeight * 2;
-  window.scrollBy({
-    top: scrollDistance,
-    behavior: 'smooth',
-  });
-}
-
 function displayImages(images) {
   galleryContainer.innerHTML = '';
   appendImages(images);
 }
 
 function appendImages(images) {
-  const imageCards = images.map(image => {
-    return `
-            <div class="image-card">
-                <a href="${image.largeImageURL}" data-lightbox="image-set" data-title="${image.tags}">
-                    <img src="${image.webformatURL}" alt="${image.tags}">
-                    <div class="info">Likes: ${image.likes}, Views: ${image.views}, Comments: ${image.comments}, Downloads: ${image.downloads}</div>
-                </a>
-            </div>
+  const fragment = document.createDocumentFragment();
+  images.forEach(image => {
+    const {
+      largeImageURL,
+      webformatURL,
+      tags,
+      likes,
+      views,
+      comments,
+      downloads,
+    } = image;
+    const imageCard = document.createElement('div');
+    imageCard.classList.add('image-card');
+    imageCard.innerHTML = `
+            <a href="${largeImageURL}" data-lightbox="image-set" data-title="${tags}">
+                <img src="${webformatURL}" alt="${tags}">
+                <div class="info">Likes: ${likes}, Views: ${views}, Comments: ${comments}, Downloads: ${downloads}</div>
+            </a>
         `;
+    fragment.appendChild(imageCard);
   });
+  galleryContainer.appendChild(fragment);
 
-  galleryContainer.innerHTML += imageCards.join('');
   currentImagesCount += images.length;
 }
 
