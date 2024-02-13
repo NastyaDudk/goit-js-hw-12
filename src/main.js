@@ -21,6 +21,10 @@ if (!apiKey) {
   );
 }
 
+function showLoadMoreBtn(show) {
+  loadMoreBtn.style.display = show ? 'block' : 'none';
+}
+
 function toastSuccess(message) {
   iziToast.success({
     title: 'Success',
@@ -35,10 +39,6 @@ function toastError(message) {
     message: message,
     position: 'topRight',
   });
-}
-
-function showLoadMoreBtn(show) {
-  loadMoreBtn.style.display = show ? 'block' : 'none';
 }
 
 let totalHits = 0;
