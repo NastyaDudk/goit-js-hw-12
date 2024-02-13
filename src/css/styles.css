@@ -87,6 +87,8 @@ li {
   cursor: pointer;
   margin: 8px;
   display: none;
+  position: absolute;
+  left: 50%;
 }
 
 .more-but {
