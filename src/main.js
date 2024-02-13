@@ -116,8 +116,9 @@ loadMoreBtn.addEventListener('click', async function () {
         toastError(
           'We are sorry, but you have reached the end of search results.'
         );
-        toggleLoadMoreBtn(false);
+        showLoadMoreBtn(false);
       }
+
       scrollToNextGroup();
     } else {
       toastError('No more images to load');
