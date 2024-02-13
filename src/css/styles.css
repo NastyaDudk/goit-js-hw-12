@@ -86,6 +86,11 @@ li {
   color: #fff;
   cursor: pointer;
   margin: 8px;
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .more-but {
