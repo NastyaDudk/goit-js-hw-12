@@ -38,15 +38,7 @@ function toastError(message) {
 }
 
 function toggleLoadMoreBtn(show) {
-  loadMoreBtn.style.display = show ? 'block' : '';
-}
-
-function showLoadMoreBtn() {
-  loadMoreBtn.style.display = 'none';
-}
-
-function hideLoadMoreBtn() {
-  loadMoreBtn.style.display = '';
+  loadMoreBtn.style.display = show ? 'block' : 'none';
 }
 
 async function searchImages(query, page = 1) {
