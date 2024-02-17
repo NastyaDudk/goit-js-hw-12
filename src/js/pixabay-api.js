@@ -1,66 +1,41 @@
-import { refs } from './refs';
-import { loaderOn } from './loader';
-import { loaderOff } from './loader';
-import { makeGalleryItem } from './render-functions';
-import { onError } from './iziToasts';
-import axios from 'axios';
-import { MESSAGE } from './iziToasts';
-import { totalHits } from './render-functions';
-import { LIMIT } from './iziToasts';
-import { scroll } from './render-functions';
+import {
+  toastSuccess,
+  toastError,
+  searchImages,
+  initializeLightbox,
+} from './render-functions';
 
-const perPage = 15;
-let page = 1;
-let userSearch;
+export function toastSuccess(message) {
+  iziToast.success({
+    title: 'Success',
+    message: message,
+    position: 'topRight',
+  });
+}
 
-export async function onFormSubmit(event) {
-  event.preventDefault();
-  refs.btnLoad.classList.add('hidden');
+export function toastError(message) {
+  iziToast.error({
+    title: 'Error',
+    message: message,
+    position: 'topRight',
+  });
+}
 
-  refs.galleryList.innerHTML = '';
-  page = 1;
-  userSearch = event.target.elements.input.value.trim();
+export async function searchImages(query, page = 1) {
+  const url = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(
+    query
+  )}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=15`;
   try {
-    const response = await fetchImg(userSearch);
-    const item = makeGalleryItem(response);
-    return item;
+    const response = await axios.get(url);
+    totalHits = response.data.totalHits;
+    return response.data.hits;
   } catch (error) {
-    onError(MESSAGE);
-  } finally {
-    loaderOff();
-    refs.form.reset();
+    console.error('Error fetching images:', error);
+    toastError('Failed to fetch images.');
+    throw error;
   }
 }
 
-export async function fetchImg(input) {
-  loaderOn();
-  const API_KEY = '42220995-e7901b62efa710cae16c4a0a7';
-  axios.defaults.baseURL = 'https://pixabay.com/api/';
-  const parameters = `q=${input}&image_type=photo&orientation=horizontal&safesearch=true`;
-  const URL = `?key=${API_KEY}&${parameters}`;
-
-  const config = {
-    params: {
-      per_page: perPage,
-      page: page,
-    },
-  };
-
-  const response = await axios.get(URL, config);
-  return response.data;
-}
-
-export async function onLoadClick() {
-  page += 1;
-  const totalPages = Math.ceil(totalHits / perPage);
-  if (page > totalPages) {
-    refs.btnLoad.classList.add('hidden');
-
-    onError(LIMIT);
-  } else {
-    const response = await fetchImg(userSearch);
-    const item = makeGalleryItem(response);
-    loaderOff();
-    return item;
-  }
+export function initializeLightbox() {
+  new SimpleLightbox('.gallery a').refresh();
 }
