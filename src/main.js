@@ -165,6 +165,11 @@ function appendImages(images) {
   currentImagesCount += images.length;
 }
 
+let lightbox = null;
+
 function initializeLightbox() {
-  new SimpleLightbox('.gallery a').refresh();
+  if (lightbox) {
+    lightbox.destroy();
+  }
+  lightbox = new SimpleLightbox('.gallery a');
 }
