@@ -1,6 +1,9 @@
 import SimpleLightbox from 'simplelightbox';
 import iziToast from 'izitoast';
-import axios from 'axios';
+
+export function showLoadMoreBtn(show) {
+  loadMoreBtn.style.display = show ? 'block' : 'none';
+}
 
 export function toastSuccess(message) {
   iziToast.success({
@@ -18,21 +21,11 @@ export function toastError(message) {
   });
 }
 
-export async function searchImages(query, page = 1) {
-  const url = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(
-    query
-  )}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=15`;
-  try {
-    const response = await axios.get(url);
-    totalHits = response.data.totalHits;
-    return response.data.hits;
-  } catch (error) {
-    console.error('Error fetching images:', error);
-    toastError('Failed to fetch images.');
-    throw error;
-  }
-}
+let lightbox = null;
 
 export function initializeLightbox() {
-  new SimpleLightbox('.gallery a').refresh();
+  if (lightbox) {
+    lightbox.destroy();
+  }
+  lightbox = new SimpleLightbox('.gallery a');
 }

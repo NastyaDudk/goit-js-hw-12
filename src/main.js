@@ -1,8 +1,9 @@
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
-import iziToast from 'izitoast';
-import 'izitoast/dist/css/iziToast.min.css';
-import axios from 'axios';
+import {
+  showLoadMoreBtn,
+  toastSuccess,
+  toastError,
+} from './js/render-functions';
+import { searchImages, displayImages, appendImages } from './js/pixabay-api';
 
 const galleryContainer = document.querySelector('.gallery');
 const loaderContainer = document.getElementById('loader');
@@ -19,43 +20,6 @@ if (!apiKey) {
   console.error(
     'API key is missing. Please provide the API key in the .env file.'
   );
-}
-
-function showLoadMoreBtn(show) {
-  loadMoreBtn.style.display = show ? 'block' : 'none';
-}
-
-function toastSuccess(message) {
-  iziToast.success({
-    title: 'Success',
-    message: message,
-    position: 'topRight',
-  });
-}
-
-function toastError(message) {
-  iziToast.error({
-    title: 'Error',
-    message: message,
-    position: 'topRight',
-  });
-}
-
-let totalHits = 0;
-
-async function searchImages(query, page = 1) {
-  const url = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(
-    query
-  )}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=15`;
-  try {
-    const response = await axios.get(url);
-    totalHits = response.data.totalHits;
-    return response.data.hits;
-  } catch (error) {
-    console.error('Error fetching images:', error);
-    toastError('Failed to fetch images.');
-    throw error;
-  }
 }
 
 async function scrollToNextGroup() {
@@ -132,44 +96,3 @@ loadMoreBtn.addEventListener('click', async function () {
     loadingIndicator.style.display = 'none';
   }
 });
-
-function displayImages(images) {
-  galleryContainer.innerHTML = '';
-  appendImages(images);
-}
-
-function appendImages(images) {
-  const fragment = document.createDocumentFragment();
-  images.forEach(image => {
-    const {
-      largeImageURL,
-      webformatURL,
-      tags,
-      likes,
-      views,
-      comments,
-      downloads,
-    } = image;
-    const imageCard = document.createElement('div');
-    imageCard.classList.add('image-card');
-    imageCard.innerHTML = `
-            <a href="${largeImageURL}" data-lightbox="image-set" data-title="${tags}">
-                <img src="${webformatURL}" alt="${tags}">
-                <div class="info">Likes: ${likes}, Views: ${views}, Comments: ${comments}, Downloads: ${downloads}</div>
-            </a>
-        `;
-    fragment.appendChild(imageCard);
-  });
-  galleryContainer.appendChild(fragment);
-
-  currentImagesCount += images.length;
-}
-
-let lightbox = null;
-
-function initializeLightbox() {
-  if (lightbox) {
-    lightbox.destroy();
-  }
-  lightbox = new SimpleLightbox('.gallery a');
-}
