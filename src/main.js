@@ -1,5 +1,5 @@
 import {
-  loadMoreBtn,
+  showLoadMoreBtn,
   toastSuccess,
   toastError,
   initializeLightbox,
@@ -9,7 +9,8 @@ import { searchImages, displayImages, appendImages } from './js/pixabay-api';
 const galleryContainer = document.querySelector('.gallery');
 const loaderContainer = document.getElementById('loader');
 const searchForm = document.getElementById('search-form');
-const loadMoreBtn = document.getElementById('load-more');
+const showLoadMoreBtn = document.getElementById('load-more');
+const loadMoreButton = document.querySelector('#loadMoreBtn');
 const loadingIndicator = document.getElementById('loading-indicator');
 
 const apiKey = '42175181-9f2e4ea0c75ffabf50c3ef9f9';
@@ -36,7 +37,7 @@ async function scrollToNextGroup() {
 
 searchForm.addEventListener('submit', async function (event) {
   event.preventDefault();
-  loadMoreBtn(false);
+  showLoadMoreBtn(false);
   const query = document.getElementById('query').value.trim();
   if (!query) {
     iziToast.warning({
@@ -54,20 +55,20 @@ searchForm.addEventListener('submit', async function (event) {
       displayImages(images);
       toastSuccess(`Was found: ${images.length} images`);
       initializeLightbox();
-      loadMoreBtn(true);
+      showLoadMoreBtn(true);
     } else {
       galleryContainer.innerHTML = '';
       toastError(
         'Sorry, there are no images matching your search query. Please try again!'
       );
-      loadMoreBtn(false);
+      showLoadMoreBtn(false);
     }
   } finally {
     loaderContainer.style.display = 'none';
   }
 });
 
-loadMoreBtn.addEventListener('click', async function () {
+showLoadMoreBtn.addEventListener('click', async function () {
   try {
     loaderContainer.style.display = 'block';
     loadingIndicator.style.display = 'block';
@@ -87,7 +88,7 @@ loadMoreBtn.addEventListener('click', async function () {
       scrollToNextGroup();
     } else {
       toastError('No more images to load');
-      loadMoreBtn(false);
+      showLoadMoreBtn(false);
     }
   } catch (error) {
     console.error('Error fetching images:', error);
