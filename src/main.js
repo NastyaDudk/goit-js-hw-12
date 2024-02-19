@@ -4,12 +4,7 @@ import {
   toastError,
   initializeLightbox,
 } from './js/render-functions';
-import {
-  searchImages,
-  displayImages,
-  appendImages,
-  loadMoreBtn,
-} from './js/pixabay-api';
+import { searchImages, displayImages, appendImages } from './js/pixabay-api';
 
 const galleryContainer = document.querySelector('.gallery');
 const loaderContainer = document.getElementById('loader');
