@@ -1,5 +1,5 @@
 import {
-  showLoadMoreBtn,
+  loadMoreBtn,
   toastSuccess,
   toastError,
   initializeLightbox,
@@ -36,7 +36,7 @@ async function scrollToNextGroup() {
 
 searchForm.addEventListener('submit', async function (event) {
   event.preventDefault();
-  showLoadMoreBtn(false);
+  loadMoreBtn(false);
   const query = document.getElementById('query').value.trim();
   if (!query) {
     iziToast.warning({
@@ -54,13 +54,13 @@ searchForm.addEventListener('submit', async function (event) {
       displayImages(images);
       toastSuccess(`Was found: ${images.length} images`);
       initializeLightbox();
-      showLoadMoreBtn(true);
+      loadMoreBtn(true);
     } else {
       galleryContainer.innerHTML = '';
       toastError(
         'Sorry, there are no images matching your search query. Please try again!'
       );
-      showLoadMoreBtn(false);
+      loadMoreBtn(false);
     }
   } finally {
     loaderContainer.style.display = 'none';
@@ -87,7 +87,7 @@ loadMoreBtn.addEventListener('click', async function () {
       scrollToNextGroup();
     } else {
       toastError('No more images to load');
-      showLoadMoreBtn(false);
+      loadMoreBtn(false);
     }
   } catch (error) {
     console.error('Error fetching images:', error);
