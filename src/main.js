@@ -3,8 +3,8 @@ import {
   toastSuccess,
   toastError,
   initializeLightbox,
-} from './render-functions';
-import { searchImages, displayImages, appendImages } from './pixabay-api';
+} from './js/render-functions';
+import { searchImages, displayImages, appendImages } from './js/pixabay-api';
 
 const galleryContainer = document.querySelector('.gallery');
 const loaderContainer = document.getElementById('loader');
