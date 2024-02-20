@@ -1,5 +1,5 @@
 import {
-  showLoadMoreBtn,
+  showloadMoreBtn,
   toastSuccess,
   toastError,
   initializeLightbox,
