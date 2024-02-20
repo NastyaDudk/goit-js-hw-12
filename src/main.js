@@ -24,7 +24,7 @@ if (!apiKey) {
 }
 
 function showLoadMoreBtn(show) {
-  loadMoreBtn.style.display = show ? 'block' : 'none';
+  showLoadMoreBtn.style.display = show ? 'block' : 'none';
 }
 
 function toastSuccess(message) {
