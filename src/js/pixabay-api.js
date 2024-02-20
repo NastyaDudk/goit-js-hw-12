@@ -1,5 +1,60 @@
 import axios from 'axios';
 
+const apiKey = '42175181-9f2e4ea0c75ffabf50c3ef9f9';
+let currentPage = 1;
+let currentQuery = '';
+let currentImagesCount = 0;
+
+if (!apiKey) {
+  console.error(
+    'API key is missing. Please provide the API key in the .env file.'
+  );
+}
+
+async function scrollToNextGroup() {
+  const cardHeight = galleryContainer
+    .querySelector('.image-card')
+    .getBoundingClientRect().height;
+  window.scrollBy({
+    top: 2 * cardHeight,
+    left: 0,
+    behavior: 'smooth',
+  });
+}
+
+searchForm.addEventListener('submit', async function (event) {
+  event.preventDefault();
+  showLoadMoreBtn(false);
+  const query = document.getElementById('query').value.trim();
+  if (!query) {
+    iziToast.warning({
+      title: 'Warning',
+      message: 'Please enter a search query.',
+    });
+    return;
+  }
+  try {
+    loaderContainer.style.display = 'block';
+    currentQuery = query;
+    currentPage = 1;
+    const images = await searchImages(query, currentPage);
+    if (images.length > 0) {
+      displayImages(images);
+      toastSuccess(`Was found: ${images.length} images`);
+      initializeLightbox();
+      showLoadMoreBtn(true);
+    } else {
+      galleryContainer.innerHTML = '';
+      toastError(
+        'Sorry, there are no images matching your search query. Please try again!'
+      );
+      showLoadMoreBtn(false);
+    }
+  } finally {
+    loaderContainer.style.display = 'none';
+  }
+});
+
 let totalHits = 0;
 
 export async function searchImages(query, page = 1) {
