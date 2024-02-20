@@ -1,5 +1,5 @@
 import { fetchImages } from './js/pixabay-api.js';
-import { displayGallery, showToast } from './render-functions.js';
+import { displayGallery, showToast } from './js/render-functions.js';
 
 const searchForm = document.getElementById('search-form');
 const loadMoreBtn = document.getElementById('load-more');
