@@ -1,5 +1,5 @@
 import {
-  loadMoreBtn,
+  showLoadMoreBtn,
   toastSuccess,
   toastError,
   initializeLightbox,
@@ -9,7 +9,7 @@ import { searchImages, displayImages, appendImages } from './js/pixabay-api';
 const galleryContainer = document.querySelector('.gallery');
 const loaderContainer = document.getElementById('loader');
 const searchForm = document.getElementById('search-form');
-const showLoadMoreBtn = document.getElementById('load-more');
+const loadMoreBtn = document.getElementById('load-more');
 const loadingIndicator = document.getElementById('loading-indicator');
 
 const apiKey = '42175181-9f2e4ea0c75ffabf50c3ef9f9';
