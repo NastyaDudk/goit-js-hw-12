@@ -4,7 +4,7 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 import axios from 'axios';
 
-import { URL, KEY } from '/.js/pixabay-api';
+import { url, apiKey } from '/.js/pixabay-api';
 import { appendImages } from './js/render-functions';
 
 const galleryContainer = document.querySelector('.gallery');
