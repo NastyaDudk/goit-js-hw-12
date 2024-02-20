@@ -1,29 +1,28 @@
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
-import iziToast from 'izitoast';
-import 'izitoast/dist/css/iziToast.min.css';
-
-export function displayGallery(images) {
-  const galleryContainer = document.querySelector('.gallery');
-
+function appendImages(images) {
+  const fragment = document.createDocumentFragment();
   images.forEach(image => {
-    const imgElement = document.createElement('img');
-    imgElement.src = image.url;
-    galleryContainer.appendChild(imgElement);
+    const {
+      largeImageURL,
+      webformatURL,
+      tags,
+      likes,
+      views,
+      comments,
+      downloads,
+    } = image;
+    const imageCard = document.createElement('div');
+    imageCard.classList.add('image-card');
+    imageCard.innerHTML = `
+            <a href="${largeImageURL}" data-lightbox="image-set" data-title="${tags}">
+                <img src="${webformatURL}" alt="${tags}">
+                <div class="info">Likes: ${likes}, Views: ${views}, Comments: ${comments}, Downloads: ${downloads}</div>
+            </a>
+        `;
+    fragment.appendChild(imageCard);
   });
+  galleryContainer.appendChild(fragment);
+
+  currentImagesCount += images.length;
 }
 
-export function initializeLightbox() {
-  if (lightbox) {
-    lightbox.destroy();
-  }
-  lightbox = new SimpleLightbox('.gallery a');
-}
-
-function toastError(message) {
-  iziToast.error({
-    title: 'Error',
-    message: message,
-    position: 'topRight',
-  });
-}
+export { appendImages };
