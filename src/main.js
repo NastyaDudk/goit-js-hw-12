@@ -10,7 +10,7 @@ const searchForm = document.getElementById('search-form');
 const loadMoreBtn = document.getElementById('load-more');
 const loadingIndicator = document.getElementById('loading-indicator');
 
-import { appendImages } from './js/render-function.js';
+import { appendImages } from './js/render-functions.js';
 import { URL, KEY } from './js/pixabay-api.js';
 
 let currentPage = 1;
