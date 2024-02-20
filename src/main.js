@@ -10,36 +10,13 @@ const searchForm = document.getElementById('search-form');
 const loadMoreBtn = document.getElementById('load-more');
 const loadingIndicator = document.getElementById('loading-indicator');
 
-const apiKey = '42175181-9f2e4ea0c75ffabf50c3ef9f9';
-let currentPage = 1;
-let currentQuery = '';
-let currentImagesCount = 0;
+import { apiKey } from './js/pixabay-api';
 
-if (!apiKey) {
-  console.error(
-    'API key is missing. Please provide the API key in the .env file.'
-  );
-}
-
-function showLoadMoreBtn(show) {
-  loadMoreBtn.style.display = show ? 'block' : 'none';
-}
-
-function toastSuccess(message) {
-  iziToast.success({
-    title: 'Success',
-    message: message,
-    position: 'topRight',
-  });
-}
-
-function toastError(message) {
-  iziToast.error({
-    title: 'Error',
-    message: message,
-    position: 'topRight',
-  });
-}
+import {
+  showLoadMoreBtn,
+  toastSuccess,
+  toastError,
+} from './js/render-functions';
 
 let totalHits = 0;
 
