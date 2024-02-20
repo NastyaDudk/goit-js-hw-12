@@ -4,15 +4,16 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 import axios from 'axios';
 
+import { URL, KEY } from '/.js/pixabay-api';
+import { appendImages } from './js/render-functions';
+
 const galleryContainer = document.querySelector('.gallery');
 const loaderContainer = document.getElementById('loader');
 const searchForm = document.getElementById('search-form');
 const loadMoreBtn = document.getElementById('load-more');
 const loadingIndicator = document.getElementById('loading-indicator');
 
-import { appendImages } from './js/render-functions.js';
-import { URL, KEY } from './js/pixabay-api.js';
-
+const apiKey = '42175181-9f2e4ea0c75ffabf50c3ef9f9';
 let currentPage = 1;
 let currentQuery = '';
 let currentImagesCount = 0;
@@ -24,7 +25,7 @@ if (!apiKey) {
 }
 
 function showLoadMoreBtn(show) {
-  showLoadMoreBtn.style.display = show ? 'block' : 'none';
+  loadMoreBtn.style.display = show ? 'block' : 'none';
 }
 
 function toastSuccess(message) {
@@ -139,6 +140,35 @@ function displayImages(images) {
   galleryContainer.innerHTML = '';
   appendImages(images);
 }
+
+function appendImages(images) {
+  const fragment = document.createDocumentFragment();
+  images.forEach(image => {
+    const {
+      largeImageURL,
+      webformatURL,
+      tags,
+      likes,
+      views,
+      comments,
+      downloads,
+    } = image;
+    const imageCard = document.createElement('div');
+    imageCard.classList.add('image-card');
+    imageCard.innerHTML = `
+            <a href="${largeImageURL}" data-lightbox="image-set" data-title="${tags}">
+                <img src="${webformatURL}" alt="${tags}">
+                <div class="info">Likes: ${likes}, Views: ${views}, Comments: ${comments}, Downloads: ${downloads}</div>
+            </a>
+        `;
+    fragment.appendChild(imageCard);
+  });
+  galleryContainer.appendChild(fragment);
+
+  currentImagesCount += images.length;
+}
+
+let lightbox = null;
 
 function initializeLightbox() {
   if (lightbox) {
