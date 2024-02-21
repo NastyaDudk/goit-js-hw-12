@@ -12,6 +12,10 @@ const loadingIndicator = document.getElementById('loading-indicator');
 
 import { apiKey } from './js/pixabay-api';
 
+function showLoadMoreBtn(show) {
+  loadMoreBtn.style.display = show ? 'block' : 'none';
+}
+
 import {
   showLoadMoreBtn,
   toastSuccess,

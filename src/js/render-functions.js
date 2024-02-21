@@ -1,9 +1,3 @@
-const loadMoreBtn = document.getElementById('load-more');
-
-export function showLoadMoreBtn(show) {
-  loadMoreBtn.style.display = show ? 'block' : 'none';
-}
-
 export function toastSuccess(message) {
   iziToast.success({
     title: 'Success',
