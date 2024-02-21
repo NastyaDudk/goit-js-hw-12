@@ -10,11 +10,17 @@ const loadMoreBtn = document.getElementById('load-more');
 const searchForm = document.getElementById('search-form');
 const loadingIndicator = document.getElementById('loading-indicator');
 
+import { apiKey } from './js/pixabay-api';
+
 let currentPage = 1;
 let currentQuery = '';
 let currentImagesCount = 0;
 
-import { apiKey } from './js/pixabay-api';
+if (!apiKey) {
+  console.error(
+    'API key is missing. Please provide the API key in the .env file.'
+  );
+}
 
 function showLoadMoreBtn(show) {
   loadMoreBtn.style.display = show ? 'block' : 'none';
