@@ -70,7 +70,6 @@ searchForm.addEventListener('submit', async function (event) {
   }
   try {
     loaderContainer.style.display = 'block';
-    currentPage = 1;
     const images = await searchImages(currentQuery, currentPage);
     if (images.length > 0) {
       displayImages(images);
