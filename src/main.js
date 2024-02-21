@@ -70,9 +70,8 @@ searchForm.addEventListener('submit', async function (event) {
   }
   try {
     loaderContainer.style.display = 'block';
-    currentQuery = query;
     currentPage = 1;
-    const images = await searchImages(query, currentPage);
+    const images = await searchImages(currentQuery, currentPage);
     if (images.length > 0) {
       displayImages(images);
       toastSuccess(`Was found: ${images.length} images`);
