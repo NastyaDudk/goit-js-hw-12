@@ -1,3 +1,5 @@
+const loadMoreBtn = document.getElementById('load-more');
+
 export function showLoadMoreBtn(show) {
   loadMoreBtn.style.display = show ? 'block' : 'none';
 }

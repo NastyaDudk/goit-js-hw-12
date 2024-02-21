@@ -7,7 +7,7 @@ import axios from 'axios';
 const galleryContainer = document.querySelector('.gallery');
 const loaderContainer = document.getElementById('loader');
 const searchForm = document.getElementById('search-form');
-const loadMoreBtn = document.getElementById('load-more');
+
 const loadingIndicator = document.getElementById('loading-indicator');
 
 import { apiKey } from './js/pixabay-api';
