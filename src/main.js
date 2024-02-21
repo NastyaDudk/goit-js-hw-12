@@ -10,18 +10,17 @@ const loadMoreBtn = document.getElementById('load-more');
 const searchForm = document.getElementById('search-form');
 const loadingIndicator = document.getElementById('loading-indicator');
 
-import {
-  apiKey,
-  currentPage,
-  currentQuery,
-  currentImagesCount,
-} from './js/pixabay-api';
+import { apiKey } from './js/pixabay-api';
 
 if (!apiKey) {
   console.error(
     'API key is missing. Please provide the API key in the .env file.'
   );
 }
+
+let currentPage = 1;
+let currentQuery = '';
+let currentImagesCount = 0;
 
 function showLoadMoreBtn(show) {
   loadMoreBtn.style.display = show ? 'block' : 'none';
@@ -70,7 +69,9 @@ searchForm.addEventListener('submit', async function (event) {
   }
   try {
     loaderContainer.style.display = 'block';
-    const images = await searchImages(currentQuery, currentPage);
+    currentQuery = query;
+    currentPage = 1;
+    const images = await searchImages(query, currentPage);
     if (images.length > 0) {
       displayImages(images);
       toastSuccess(`Was found: ${images.length} images`);
