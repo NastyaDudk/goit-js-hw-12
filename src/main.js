@@ -10,6 +10,10 @@ const loadMoreBtn = document.getElementById('load-more');
 const searchForm = document.getElementById('search-form');
 const loadingIndicator = document.getElementById('loading-indicator');
 
+let currentPage = 1;
+let currentQuery = '';
+let currentImagesCount = 0;
+
 import { apiKey } from './js/pixabay-api';
 
 function showLoadMoreBtn(show) {
@@ -45,10 +49,6 @@ async function scrollToNextGroup() {
     behavior: 'smooth',
   });
 }
-
-let currentPage = 1;
-let currentQuery = '';
-let currentImagesCount = 0;
 
 searchForm.addEventListener('submit', async function (event) {
   event.preventDefault();
