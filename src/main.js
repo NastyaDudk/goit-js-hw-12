@@ -16,11 +16,7 @@ function showLoadMoreBtn(show) {
   loadMoreBtn.style.display = show ? 'block' : 'none';
 }
 
-import {
-  showLoadMoreBtn,
-  toastSuccess,
-  toastError,
-} from './js/render-functions';
+import { toastSuccess, toastError } from './js/render-functions';
 
 let totalHits = 0;
 
