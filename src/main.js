@@ -4,9 +4,9 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 import axios from 'axios';
 
-const loadMoreBtn = document.getElementById('load-more');
 const galleryContainer = document.querySelector('.gallery');
 const loaderContainer = document.getElementById('loader');
+const loadMoreBtn = document.getElementById('load-more');
 const searchForm = document.getElementById('search-form');
 const loadingIndicator = document.getElementById('loading-indicator');
 
